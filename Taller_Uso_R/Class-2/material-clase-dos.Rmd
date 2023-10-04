@@ -1,0 +1,1903 @@
+---
+title: "Clase Dos: Estructuras de Datos"
+author: "Daniel Amador Salas"
+output: rmdformats::downcute
+---
+
+Las estructuras de datos son objetos que contienen datos. Cuando trabajamos con R, lo que estamos haciendo es manipular estas estructuras.
+
+Las estructuras tienen diferentes características. Entre ellas, las que distinguen a una estructura de otra son su número de dimensiones y si son homogeneas o hereterogeneas.
+
+La siguiente tabla muestra las principales estructuras de control que te encontrarás en R.
+
+| **Dimensiones** | **Homogeneas** | **Heterogeneas** |
+|-----------------|----------------|------------------|
+| 1               | Vector         | Lista            |
+| 2               | Matriz         | Data frame       |
+| n               | Array          |                  |
+
+# Vectores
+
+Un vector es la estructura de datos más sencilla en R. Un vector es una colección de uno o más datos del **mismo tipo**.
+
+Todos los vectores tienen tres propiedades:
+
+-   **Tipo**. Un vector tiene el mismo tipo que los datos que contiene. Si tenemos un vector que contiene datos de tipo numérico, el vector será también de tipo numérico. Los vectores son **atómicos**, pues sólo pueden contener datos de un sólo tipo, no es posible mezclar datos de tipos diferentes dentro de ellos.
+
+-   **Largo**. Es el número de elementos que contiene un vector. El largo es la única **dimensión** que tiene esta estructura de datos.
+
+-   **Atributos**. Los vectores pueden tener metadatos de muchos tipos, los cuales describen características de los datos que contienen. Todos ellos son incluidos en esta propiedad. En este libro no se usarán vectores con metadatos, por ser una propiedad con usos van más allá del alcance de este libro.
+
+Como los vectores son la estructura de datos más sencilla de R, datos simples como el número **3**, son en realidad vectores. En este caso, un vector de tipo numérico y largo igual a 1.
+
+``` r
+3
+```
+
+```         
+## [1] 3
+```
+
+Verificamos que el **3** es un vector con la función `is.vector()`.
+
+``` r
+is.vector(3)
+```
+
+```         
+## [1] TRUE
+```
+
+Y usamos la función `length()` para conocer su largo.
+
+``` r
+length(3)
+```
+
+```         
+## [1] 1
+```
+
+## **¿Cómo crear un vector?**
+
+La forma más sencilla de crear un vector en R es usando la función `c`, que se utiliza para la **concatenación de objetos**. Puedes guardar en memoria el vector asignándole un nombre con el operador `<-`.
+
+``` r
+# Creando vectores en R con la función 'c' 
+x <- c(12, 6, 67) 
+y <- c(2, 13) 
+y
+```
+
+```         
+## [1]  2 13
+```
+
+Los vectores también **pueden ser no numéricos**. Por lo tanto, puedes crear vectores con caracteres, objetos lógicos u otros tipos de objetos de datos, como ya se comentó en la introducción.
+
+``` r
+caracteres <- c("Madrid", "Barcelona", "Pontevedra", "Murcia") 
+class(caracteres) # "character"  
+
+logico <- c(TRUE, TRUE, FALSE, TRUE) 
+class(logico) # "logical"
+```
+
+Sin embargo, si **mezclas distintos tipos de datos** dentro de un vector **los componentes se transformarán** en elementos del mismo tipo. A esto se le llama coerción de tipos de datos.
+
+``` r
+mezcla <- c(TRUE, "Correcto", 8, 2.2) 
+mezcla # "TRUE" "Correct"  "8"  "2.2"  
+
+class(mezcla)  # "character" 
+typeof(mezcla) # "character"
+```
+
+### **Nombrar vectores en R**
+
+También puedes nombrar los elementos de los vectores. Para ese propósito, simplemente elige un nombre para cada componente o solo para algunos de ellos.
+
+``` r
+mi_vector <- c(naranja = 4, manzana = 6) 
+mi_vector
+```
+
+``` output
+naranja manzana        
+  4       6
+```
+
+Si ya has creado el vector, puedes usar la función `setNames` de la siguiente manera para poner nombre a los componentes:
+
+``` r
+setNames(y, c("naranja", "manzana"))
+```
+
+## **Ordenando vectores**
+
+### **La función sort**
+
+Para **ordenar un vector**, puedes llamar a la función `sort` pasando como argumento el vector. Por defecto, la función ordena de forma ascendente.
+
+``` r
+z <- c(12, 15, 3, 22) 
+sort(z)
+```
+
+``` output
+[1]  3 12 15 22
+```
+
+También puedes ordenar los datos en orden decreciente estableciendo el argumento `decreasing` como `TRUE`:
+
+``` r
+sort(z, decreasing = TRUE)
+```
+
+``` output
+[1]  22 15 12 3
+```
+
+### **La función order**
+
+Alternativamente, puedes usar corchetes y ordenar los componentes del vector como un índice haciendo uso de la función `order` como sigue:
+
+``` r
+# Orden creciente 
+z[order(z)]  # Equivalente a sort(z)  
+# Orden decreciente 
+z[order(-z)] # Equivalente a sort(z, decreasing = TRUE)
+```
+
+### **Invertir el orden de un vector**
+
+Además, puedes invertir el orden de un vector utilizando la función `rev`.
+
+``` r
+# Invirtiendo el orden de un vector 
+rev(z)
+```
+
+```         
+[1]  22 3 15 12
+```
+
+## **Concatenar vectores**
+
+Unir dos o más vectores es tan fácil como crear uno. De hecho, solo necesitas llamar a la función `c` y pasar los vectores como argumentos para concatenar un vector a otro.\
+
+``` r
+x <- c(1, 2, 3) 
+y <- c(4, 5, 6) 
+c(x, y)
+```
+
+```         
+[1]  1 2 3 4 5 6
+```
+
+Es necesario destacar que el orden de los elementos es relevante. Los vectores se concatenarán según el orden de entrada:
+
+``` r
+c(y, x)
+```
+
+```         
+[1]  4 5 6 1 2 3
+```
+
+## **Crear un vector vacío en R**
+
+En ocasiones es necesario inicializar un vector vacío en R y llenarlo dentro de un bucle `for`. Con tal objetivo puedes utilizar la función `c` sin especificar ningún argumento para crear la estructura vacía. Si lo prefieres también puedes usar la función `vector`.
+
+``` r
+# Vector vacío 
+mi_vector <- c()  # Llenando el vector con un bucle 
+for(i in 1:10) 
+{   
+  mi_vector[i] <- i 
+}  
+
+mi_vector
+```
+
+```         
+[1]  1  2  3  4  5  6  7  8  9  10
+```
+
+Si quieres llenar un vector vacío, es más eficiente **preasignar memoria** creando un vector (por ejemplo con valores **`NA`**) de la longitud del vector final, o usando la función **`vector`**.
+
+``` r
+# Preasignamos memoria 
+my_vector <- rep(NA, 5) 
+my_vector <- vector(length = 5)  # Llenamos el vector mediante un bucle for for(i in 1:5) 
+{   
+  my_vector[i] <- i 
+}
+```
+
+## **Acceder a los elementos de un vector**
+
+Acceder a elementos de un vector permite acceder a elementos únicos, como el primer o último valor, obtener un subconjunto del vector, así como reemplazar, cambiar o eliminar algunos elementos. Esto se puede realizar mediante índices númericos o lógicos.
+
+### **Índice numérico para acceder a elementos**
+
+Para acceder a los elementos de un vector, puedes **indicar entre corchetes el subíndice del elemento o elementos del vector correspondiente** (entero positivo).
+
+Cuando accedas a posiciones 'negativas', se entiende que deseas acceder a todas las posiciones excepto las indicadas con el signo menos.
+
+Considera las letras dadas por la función `letters`.
+
+``` r
+letras <- letters 
+letras
+```
+
+```         
+[1] "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"
+```
+
+En el siguiente bloque de código se dan algunos ejemplos para acceder a diferentes datos.
+
+``` r
+# Primer elemento
+letras[1]
+
+# Primer elemento, simplificando la clase de salida
+letras[[1]]
+
+# Tercer y cuarto elemento
+letras[c(3, 4)]
+
+# Letras 'pares'
+letras[seq(2, n, 2)]
+
+# Letras 'impares'
+letras[seq(1, n, 2)] letras[-seq(2, n, 2)] # Equivalente
+```
+
+### **Índice lógico para acceder a elementos**
+
+Otra posibilidad es usar un vector lógico. En este caso se accederá a las posiciones con valor `TRUE`. Veamos un ejemplo con la temperatura máxima mensual de una ciudad.
+
+``` r
+temp <- c(22.52, 18.70, 19.61, 22.79, 29.38, 30.19, 33.16, 36.97, 33.29, 28.98, 24.31, 22.43) 
+mes <- c("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
+```
+
+Como ejemplo, ahora puedes buscar los meses con valores superiores a 30.
+
+``` r
+# Meses con temperaturas máximas mayores que 30 grados
+mes[temp > 30]
+```
+
+Nótese que el output de `temp > 30` es un vector lógico.
+
+```         
+[1] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE
+```
+
+Además, también puedes combinar las condiciones lógicas.
+
+``` r
+# Meses con temperatura máxima menor a 20 grados o superior a 35 
+mes[temp < 20 | temp > 35]
+```
+
+```         
+ [1] "febrero"  "marzo"  "agosto"
+```
+
+## **Agregar valores a vectores en R**
+
+Ahora agregaremos la letra 'ñ' al vector de letras que creamos antes. En primer lugar, necesitamos encontrar la letra anterior (o la siguiente) en el alfabeto. En este caso buscaremos la letra 'n' y colocaremos la 'ñ' justo después. Podemos hacer uso de la función `which` para buscar el índice del elemento correspondiente a la letra 'n'.
+
+``` r
+# Buscando el índice
+n1 <- which(letras == "n")
+n1 # 14
+```
+
+Con una sola línea de código puedes concatenar los caracteres.
+
+``` r
+c(letras[1:n1], "ñ", letras[-(1:n1)])
+```
+
+En caso de que desees agregar el elemento al principio o al final del vector, simplemente usa la función `c` en el orden correspondiente.
+
+``` r
+# Añadiendo la letra 'ñ' al principio del vector
+c("ñ", letras)
+
+# Añadiendo la letra 'ñ' al final del vector
+c(letras, "ñ")
+```
+
+## **¿Cómo borrar un vector en R?**
+
+Puedes eliminar un vector en R con la función `rm` o asignarle otro valor, como `NULL`.
+
+``` r
+mi_vector <- c(1, 2, 5, 6, 7)
+
+# Con la función rm
+rm(mi_vector)
+
+# Sobrescribiendo el vector con otro valor
+mi_vector <- 0
+
+# Asignando NULL
+mi_vector <- NULL
+```
+
+### **Borrar elemento de un vector**
+
+Si quieres eliminar solo algunos valores específicos de un vector, puedes usar el signo `-` e indicar los índices del vector que no quieres conservar. Veamos algunos ejemplos:
+
+``` r
+vector <- c("Londres", "Nueva York", "Paris")
+
+# Eliminando 'Londres'
+vector[-1] # "Nueva York" "Paris"
+vector[which(vector != "Londres")]  # Equivalente
+vector[-which(vector == "Londres")] # Equivalente
+```
+
+# **Factor en R**
+
+Los factores en R se utilizan para **representar datos categóricos**. Se puede pensar en ellos como vectores en los que cada elemento tiene una etiqueta asociada. Ten en cuenta que es preferible utilizar factores con etiquetas que vectores enteros para indicar categorías, ya que las etiquetas son autodescriptivas. En esta lección aprenderás todo sobre cómo crear un factor en R.
+
+## **¿Qué es un factor en R?**
+
+Un factor en R es una estructura de datos utilizada para representar un vector como datos categóricos. El **objeto factor toma un número acotado de diferentes valores llamados niveles**. Los factores son muy útiles cuando se trabaja con columnas de caracteres de data frames, para crear gráficos de barras y crear resúmenes estadísticos de variables categóricas.
+
+## **La función factor**
+
+La función `factor` permite crear factores en R. En el siguiente bloque se muestran los argumentos de la función con una descripción resumida.
+
+``` r
+factor(x = character(),         # Vector de entrada
+       levels,                  # Valores únicos de x (opcional)
+       labels = levels,         # Etiquetas para los niveles (opcional)
+       exclude = NA,            # Valores a excluir de los niveles
+       ordered = is.ordered(x), # Si los niveles de entrada están ordenados o no
+       nmax = NA)               # Máximo número de niveles
+```
+
+Puedes obtener una descripción más detallada de la función y sus argumentos ejecutando `?factor` o `help(factor)`.
+
+## **Convertir caracter en factor en R**
+
+Ahora revisaremos un ejemplo donde nuestro **input es un vector de caracteres**. Supón que tienes un vector que contiene los días de la semana en los que sucedió algún evento. Puedes convertir el vector de caracteres a factor utilizando la función `factor`.
+
+``` {.r .R}
+dias <- c("Viernes", "Martes", "Jueves", "Lunes", "Miércoles", "Lunes", "Miércoles", "Lunes", "Lunes", "Miércoles", "Domingo", "Sábado")
+
+# Niveles en orden alfabético
+mi_factor <- factor(dias)
+mi_factor
+```
+
+```         
+[1] Viernes   Martes    Jueves    Lunes     Miercoles Lunes     Miercoles Lunes     Lunes     Miercoles Domingo   Sabado   
+Levels: Domingo Jueves Lunes Martes Miercoles Sabado Viernes
+```
+
+**NOTA:** si al ejecutar el código anterior se muestran algunos caracteres extraños en el resultado es debido al Encoding que actualmente esta usando R, podemos cambiarlo a UTF-8 usando el siguiente código.
+
+``` r
+Sys.setlocale("LC_CTYPE", ".1251")
+```
+
+Cabe destacar que se pueden devolver y **convertir los niveles de los factores en caracteres** con la función `levels`.
+
+``` r
+levels(mi_factor)
+```
+
+```         
+[1] "Domingo"   "Jueves"    "Lunes"     "Martes"    "Miercoles" "Sabado"    "Viernes"  
+```
+
+## **Convertir variable numérica en factor**
+
+Supongamos ahora que has registrado la ciudad de nacimiento de seis personas con la siguiente codificación:
+
+-   1: Dublin.
+
+-   2: Londres,
+
+-   3: Sofia.
+
+-   4: Pontevedra.
+
+Por lo tanto, tendrás datos almacenados en un vector numérico como los siguientes:
+
+``` r
+ciudad <- c(3, 2, 1, 4, 3, 2)
+```
+
+Ahora puedes llamar a la función `factor` para convertir y obtener los datos categorizados para su posterior análisis.
+
+``` r
+mi_factor <- factor(ciudad) 
+mi_factor
+```
+
+La salida tendrá la siguiente estructura:
+
+```         
+[1] 3 2 1 4 3 2 
+Levels: 1 2 3 4
+```
+
+### **Cambiar las etiquetas de los niveles de un factor en R**
+
+Si el vector de entrada es numérico como sucedió en la sección anterior, la **etiqueta correspondiente** (la ciudad) **no queda reflejada**. Para resolver este problema, puedes almacenar los datos en un objeto de tipo factor utilizando la función `factor` e indicar las etiquetas correspondientes de los niveles en el argumento `labels` y así **cambiar el nombre de los niveles del factor**.
+
+``` r
+# Especificando las etiquetas en el orden correspondiente
+factor_ciudades <- factor(ciudad, labels = c("Dublin", "Londres", "Sofia", "Pontevedra"))
+
+# Imprimir el resultado
+factor_ciudades
+```
+
+```         
+[1] Sofia      Londres    Dublin     Pontevedra Sofia      Londres   
+Levels: Dublin Londres Sofia Pontevedra # <- Dublin: 1, Londres: 2, Sofia: 3, Pontevedra: 4
+```
+
+En el bloque de código anterior puedes ver el resultado final. Como puedes observar, ahora los datos se clasifican usando las ciudades como etiquetas.
+
+### **Diferencia entre los argumentos 'levels' y 'labels'**
+
+Es común confundirse entre los argumentos `labels` y `levels` de la función `factor` en R. Considera el siguiente vector con un único grupo y crea un factor a partir de él con argumentos predeterminados:
+
+``` r
+genero <- c("femenino", "femenino", "femenino", "femenino")
+factor(genero)
+```
+
+```         
+[1] femenino femenino femenino femenino
+Levels: femenino
+```
+
+## **Reordenar factores en R**
+
+Quizás te estés preguntando **cómo cambiar el orden de los niveles** (esto puede ser importante, por ejemplo, en algunas representaciones gráficas). El orden de los niveles de los factores se puede cambiar de varias maneras, descritas en las subsecciones siguientes.
+
+### **Orden personalizado**
+
+En caso de que quieras crear un orden personalizado para los niveles, deberás crear un vector con el order que prefieres y pasarlo al argumento `labels`.
+
+``` r
+# Creando un vector con el orden deseado 
+orden <- c("Londres", "Sofia", "Dublin", "Pontevedra")  
+
+# Indica el orden en el argumento 'levels'
+factor_ciudades <- factor(factor_ciudades, levels = orden) 
+factor_ciudades
+```
+
+```         
+[1] Sofia      Londres    Dublin     Pontevedra Sofia      Londres   
+Levels: Londres Sofia Dublin Pontevedra
+```
+
+También puedes ordenar alfabéticamente los niveles del factor utilizando la función `sort`:
+
+``` r
+# Orden alfabético
+factor(ciudad, labels = sort(levels(factor_ciudades)))
+```
+
+```         
+[1] Pontevedra Londres    Dublin     Sofia      Pontevedra Londres   
+Levels: Dublin Londres Pontevedra Sofia
+```
+
+### **La función reorder**
+
+La función `reorder` está diseñada para ordenar los niveles de un factor en función de una medida estadística de otra variable. Considera un data frame donde cada fila representa a un individuo, la columna 'ciudad' representa la ciudad donde nació y la columna 'salario' representa su salario anual real en miles de euros.
+
+``` r
+set.seed(1)
+df <- data.frame(ciudad = factor_ciudades, salario = sample(20:50, 6))
+df
+```
+
+```         
+      ciudad salario
+1      Sofia      44
+2    Londres      23
+3     Dublin      26
+4 Pontevedra      20
+5      Sofia      21
+6    Londres      42
+```
+
+Puedes reordenar el factor en función del salario medio de las personas utilizando la función `reorder` de la siguiente manera:
+
+``` r
+reorder(df$ciudad, df$salario, mean)
+```
+
+```         
+Dublin   Londres   Sofia    Pontevedra 
+ 36.0     37.0     26.5       45.0 
+Levels: Sofia Dublin Londres Pontevedra    # <- Ordenados de menor a mayor salario
+```
+
+### **Revertir el orden de los niveles**
+
+Recuerda que puedes usar la función `levels` para obtener los niveles de un factor. En este momento, los niveles del factor son los siguientes:
+
+``` r
+levels(factor_ciudades)
+```
+
+```         
+"Londres"  "Sofia"  "Dublin"  "Pontevedra"
+```
+
+Puedes revertir el orden de los niveles con la función `rev`:
+
+``` r
+factor(factor_ciudades, labels = rev(levels(factor_ciudades)))
+```
+
+```         
+Sofia  Dublin  Pontevedra  Londres  Sofia  Dublin    
+Levels: Pontevedra Dublin Sofia Londres     # <- Orden revertido
+```
+
+### **La función relevel**
+
+Además, si quieres cambiar solo una observación y ponerla en primer lugar, puedes usar la función `relevel`. Por ejemplo, si quieres que 'Londres' sea el primer nivel y mantener el orden de los demás, puede usar:
+
+``` r
+# Poniendo el nivel 'Londres' de primero
+factor_ciudades <- relevel(factor_ciudades, "Londres")
+factor_ciudades
+```
+
+```         
+Sofia  Londres  Dublin  Pontevedra  Sofia  Londres    
+Levels: Londres Dublin Sofia Pontevedra
+```
+
+En las siguientes secciones revisaremos cómo convertir factores a otros tipos de datos de la manera más eficiente posible.
+
+## **Convertir factor en variable numérica**
+
+Si tienes un factor en R que quieres convertir a tipo numérico, la forma más eficiente se ilustra en el siguiente bloque de código, utilizando las funciones `as.numeric` y `levels` para indexar los niveles por el índice del factor correspondiente.
+
+``` r
+mis_datos <- c(0, 2, 0, 5, 1, 9, 9, 4)
+mi_factor <- factor(mis_datos)
+
+as.numeric(levels(mi_factor))[mi_factor]
+```
+
+```         
+[1] 0 2 0 5 1 9 9 4
+```
+
+Si quieres convertir el factor al vector original (con el mismo orden) nunca uses **`as.numeric(mi_factor)`**, ya que **devolverá un vector númerico diferente al deseado**.
+
+## **Convertir factor de R en string**
+
+Es posible que necesites convertir un factor en una cadena de caracteres. Para ello, puedes utilizar la función `as.character`.
+
+``` r
+mi_factor_2 <- factor(c("Junio", "Julio", "Enero", "Junio"))
+
+as.character(mi_factor_2)
+```
+
+```         
+[1] "Junio"  "Julio"  "Enero"  "Junio"
+```
+
+Nótese que si utilizas la función `levels`, la salida devolverá un vector de caracteres con las cadenas ordenadas alfabéticamente.
+
+``` r
+levels(mi_factor_2)
+```
+
+```         
+[1] "Enero"  "Julio"  "Junio" 
+```
+
+## **Convertir un factor de R en clase date**
+
+Además, si necesitas convertir un objeto de tipo factor a fecha, puede usar la función `as.Date`, especificando en el argumento `format` el formato de fecha con el que estás trabajando.
+
+```         
+factor_fechas <- factor(c("21/03/2020",
+                           "22/03/2020",
+                           "23/03/2020"))
+
+as.Date(factor_fechas, format = "%d/%m/%Y")
+```
+
+```         
+[1] "2020-03-21" "2020-03-22" "2020-03-23"
+```
+
+# **Listas en R**
+
+¿Qué es una lista en R? Una lista es una **colección ordenada de cualquier objeto de R**. A diferencia de los vectores y las matrices, donde los elementos deben ser del mismo tipo, en el caso de las listas **los elementos pueden ser de un tipo diferente** o almacenar distintas estructuras.
+
+## **Crear una lista en R**
+
+Si no sabes cómo **crear una lista en R**, solo necesitas usar la función `list`, especificando los objetos que deseas unir dentro de tu lista.
+
+``` r
+x <- c(45, 12, 56, 14, 16)
+y <- c("Coche", "Bicicleta")
+z <- matrix(1:12, ncol = 4)
+
+# Creando una lista
+mi_lista <- list(x, y, z)
+mi_lista
+```
+
+```         
+[[1]]
+[1] 45 12 56 14 16
+
+[[2]]
+[1] "Coche"  "Bicicleta"
+
+[[3]]
+      [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+```
+
+## **Nombrar elementos de listas en R**
+
+Como en otras estructuras de datos de R, puedes **nombrar los elementos** para identificar o tener un acceso más fácil a los objetos utilizando el signo `$`.
+
+``` r
+mi_lista_nombres <- list(A = x, B = y, C = z)
+mi_lista_nombres
+```
+
+```         
+$`A`
+[1] 45 12 56 14
+
+$B
+[1] "Coche"  "Bicicleta"
+
+$C
+      [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+```
+
+## **Extraer elementos de una lista en R**
+
+Ahora, vamos a indexar los elementos de la lista para acceder a los datos que queramos. Para ello, puedes extraer los elementos de la lista **con corchetes simples o dobles**.
+
+``` r
+# Primer elemento de la lista
+mi_lista[1]
+
+# Primer elemento de la lista, simplificando la salida
+mi_lista[[1]]
+
+# Primer elemento del primer elemento de la lista.
+mi_lista[[1]][1]
+unlist(mi_lista[1])[1] # Equivalente
+
+# Primera columna del tercer elemento
+mi_lista[[3]][, 1]
+
+# Segundo elemento de la primera columna
+# del tercer elemento de la lista
+mi_lista[[3]][, 1][2]
+mi_lista[[3]][2, 1] # Equivalente
+```
+
+Sin embargo, **en caso de que hayas nombrado los elementos de tu lista**, puedes usar la forma anterior para obtener los valores, especificar los nombres de los elementos de la lista a los que deseas acceder, o usar el operador `$`, tal y como se muestra en los siguientes ejemplos:
+
+``` r
+# Primer elemento de la lista
+mi_lista_nombres["A"]
+
+# Primer elemento de la lista, simplificando la salida
+mi_lista_nombres[["A"]]
+
+# Primer elemento de la lista, simplificando la salida
+mi_lista_nombres$A
+
+# Primer componente del primer elemento de la lista
+mi_lista_nombres$A[1]
+unlist(mi_lista_nombres[1])[1]
+
+# Primera columna del tercer elemento
+mi_lista_nombres$C[, 1]
+mi_lista_nombres$`C`[, 1] # Equivalente
+
+# Segundo elemento de la primera columna
+# del tercer elemento de la lista
+mi_lista_nombres$C[, 1][2]
+mi_lista_nombres$C[2, 1] # Equivalente
+```
+
+Si utilizas **corchetes dobles** en lugar de **corchetes simples** para obtener subconjuntos de una lista, la clase de la salida se simplificará tanto como sea posible.
+
+## **Número de elementos de una lista en R**
+
+La longitud de una lista es el **número de objetos dentro de la lista**. Puedes obtener el número de elementos de la lista con la función `length`. Si quieres conocer la longitud de cualquier objeto dentro de la lista, primero deberás extraer el elemento correspondiente.
+
+``` r
+# Número de elementos de la lista
+length(mi_lista) # 3
+
+# Número de elementos del primer objeto
+length(mi_lista[[2]]) # 5
+```
+
+## **Crear una lista vacía en R**
+
+A veces puede ser necesario llenar una lista dentro de un bucle `for`. Para ese propósito, es interesante crear una lista vacía en R. Aunque puedes crear una lista vacía con la función `list`, si necesitas una longitud previamente especificada necesitas usar la función `vector` y especificar la longitud final en el argumento `length` para crear una lista de tamaño *n*.
+
+``` r
+# Lista vacía
+lista_vacia <- list()
+
+# Creando una lista vacía con 3 elementos
+lista_vacia <- vector("list", length = 3)
+```
+
+Si quisieses llenar la lista dentro de un bucle podrías hacer algo como lo siguiente:
+
+``` r
+for (j in 1:3) {
+    lista_vacia[[j]] <- c(1, 2, 3 * j)
+}
+```
+
+```         
+[[1]]
+[1] 1 2 3
+
+[[2]]
+[1] 1 2 6
+
+[[3]]
+[1] 1 2 9
+```
+
+## **Añadir elementos a una lista en R**
+
+Si necesitas **agregar un elemento a una lista**, puedes especificar el objeto que deseas agregar en el siguiente índice a longitud de la lista. Es decir, si la longitud de la lista es 3, puede agregar el nuevo objeto en el cuarto índice.
+
+``` r
+mi_lista[[4]] <- data.frame(X = c(8, 5, 3), Y = c(7, 9, 1))
+
+# Equivalente, para el caso general de n elementos
+mi_lista[[length(mi_lista) + 1]] <- data.frame(X = c(8, 5, 3), Y = c(7, 9, 1)) 
+```
+
+Ahora, imprime tu nueva lista y tendrás el siguiente resultado:
+
+```         
+[[1]]
+[1] 45 12 56 14
+
+[[2]]
+[1] "Coche"  "Bicicleta"
+
+[[3]]
+      [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+
+[[4]]
+   X  Y
+1  8  7
+2  5  9
+3  3  1
+```
+
+## **Borrar elementos de una lista**
+
+Para **eliminar algunos elementos** de una lista puedes asignar el índice del elemento de la lista que quieres eliminar como `NULL` o indicar entre corchetes el índice con el operador `-`. Si deseas eliminar varios elementos a la vez, puedes combinarlos con la función `c`.
+
+``` r
+mi_lista[[2]] <- NULL
+mi_lista[-2] # Equivalente
+
+# Eliminando el primer y segundo elemento a la vez
+mi_lista[-c(1, 2)] 
+```
+
+## **Lista de listas en R. Listas anidadas**
+
+También puedes **anidar listas en R**. Esto significa que en todos o algunos elementos de tu lista raíz tendrás una lista. Esa lista también puede almacenar otras listas u otros tipos de objetos. Puedes lograr esto con la función `list`, agregando listas en los elementos. En este ejemplo, vamos añadir a una lista las dos listas creadas en las secciones anteriores.
+
+``` r
+list_de_listas <- list(mi_lista, mi_lista_nombres)
+list_de_listas
+```
+
+Al imprimir la lista anidada obtendrás lo siguiente:
+
+```         
+[[1]]
+[[1]][[1]]
+[1] 45 12 56 14 16
+
+[[1]][[2]]
+[1] "Coche"  "Bicicleta"
+
+[[1]][[3]]
+      [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+
+
+[[2]]
+[[2]]$`A`
+[1] 45 12 56 14 16
+
+[[2]]$B
+[1] "Coche"  "Bicicleta"
+
+[[2]]$C
+      [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+```
+
+### **Accediendo a los elementos de la lista anidada**
+
+Acceder a elementos de listas dentro de listas es **similar a acceder a los elementos a una única lista**. De hecho, si accedes a una lista y la almacenas dentro de un objeto, el proceso es el mismo que se presenta en la sección de extracción de elementos de una única lista. De lo contrario, deberás **conocer y seguir el nivel de jerarquía de la lista**. Tienes algunos ejemplos en el siguiente bloque de código:
+
+``` r
+# Accediendo a la primera lista
+list_de_listas[[1]]
+
+# Accediendo a la segunda lista
+list_de_listas[[2]]
+
+# Primer objeto de la segunda lista
+list_de_listas[[2]][[1]] # 45 12 56 14 16
+
+# Tercer elemento del primer objeto
+# de la segunda lista
+list_de_listas[[2]][[1]][3] # 56
+list_de_listas[[2]]$A[3]    # Equivalente
+
+# Puedes guardar las listas en objetos
+# y acceder a los elementos de esa lista
+# como explicamos en la sección correspondiente
+lista_1 <- list_de_listas[[1]]
+
+# Este sería el primer objeto
+# de la primera lista
+lista_1[[1]] 
+```
+
+## **Unir listas en R**
+
+Puedes juntar o unir dos o más listas listas en R. Para ello, puede usar las funciones `append`, `c` o `do.call`. Al combinar las listas de esta manera, los elementos de **la segunda lista se agregarán al final de la primera lista**.
+
+``` r
+# Datos originales
+mi_lista <- list(x, y, z)
+mi_lista_nombres <- list(A = x, B = y, C = z)
+
+# Concatenar listas
+append(mi_lista, mi_lista_nombres)
+c(mi_lista, mi_lista_nombres) # Equivalente
+do.call(c, list(mi_lista, mi_lista_nombres)) # Equivalente
+```
+
+```         
+[[1]]
+[1] 45 12 56 14 16
+
+[[2]]
+[1] "Coche"  "Bicicleta"
+
+[[3]]
+       [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+
+$A
+[1] 45 12 56 14 16
+
+$B
+[1] "Coche"  "Bicicleta"
+
+$C
+       [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+```
+
+### **Juntar listas con los mismos nombres**
+
+Cuando tienes dos o más listas con los **mismos nombres de los elementos**, puedes fusionar los elementos de la lista con una lista de la misma longitud que las anteriores, donde se concatenarán los elementos con el mismo nombre. Primero, vamos a copiar nuestra lista con nombres en una nueva variable:
+
+``` r
+# Copiamos la lista con nombres en un nuevo objeto
+mi_lista_nombres_2 <- mi_lista_nombres
+```
+
+Ahora puedes usar las funciones `Map` o `mapply` con esas listas de la siguiente manera:
+
+``` r
+Map(c, mi_lista_nombres, mi_lista_nombres_2)
+mapply(c, mi_lista_nombres, mi_lista_nombres_2, SIMPLIFY = FALSE) # Equivalente
+```
+
+Puedes ver el resultado de la lista con elementos concatenados:
+
+```         
+$`A`
+[1] 45 12 56 14 16 45 12 56 14 16
+
+$B
+[1] "Coche"  "Bicicleta" "Coche"  "Bicicleta"
+
+$C
+[1]  1  2  3  4  5  6  7  8  9 10 11 12  1  2  3  4  5  6  7  8  9 10 11 12
+```
+
+Nótese que el elemento \'C\' ya **no es una matriz**.
+
+## **Comparar dos listas en R**
+
+Puedes comparar dos listas de diferentes maneras: obteniendo los elementos comunes, los diferentes o comparando los que son iguales. En primer lugar, vamos a copiar nuestra primera lista y cambiar el primer elemento.
+
+``` r
+mi_lista_2 <- mi_lista
+mi_lista_2[[1]] <- c(4, 1, 9)
+```
+
+### **Elementos comunes en dos listas de R**
+
+Primero, si quieres obtener cuáles son los **elementos iguales entre dos listas**, puedes usar la función `intersect`, que devolverá una lista con los elementos comunes de las listas.
+
+``` r
+# Devuelve los elementos comunes
+intersect(mi_lista, mi_lista_2)
+```
+
+```         
+[[1]]
+[1] "Coche"  "Bicicleta"
+
+[[2]]
+       [, 1] [, 2] [, 3] [, 4]
+[1, ]    1     4     7    10
+[2, ]    2     5     8    11
+[3, ]    3     6     9    12
+```
+
+### **Elementos diferentes en dos listas de R**
+
+En segundo lugar, con la función `setdiff` obtendrás los **elementos diferentes entre las listas**. Ten en cuenta que el orden en que pasa las listas es importante.
+
+```         
+# ¿Qué está en 'mi_lista' que no está en 'mi_lista_2'?
+setdiff(mi_lista, mi_lista_2) # 45 12 56 14 16
+
+# ¿Qué está en 'mi_lista_2' que no está en 'mi_lista'?
+setdiff(mi_lista_2, mi_lista) # 4 1 9
+```
+
+### **Comparar elementos iguales en dos listas de R**
+
+En tercer lugar, también puedes comparar los elementos iguales de dos listas con el operador `%in%` o con la función `compare.list` de la biblioteca `useful`. El resultado será un vector lógico.
+
+``` r
+mi_lista %in% mi_lista_2 # FALSE TRUE TRUE
+
+library(useful)
+compare.list(mi_lista, mi_lista_2) # Equivalente
+```
+
+## **Convertir lista en vector**
+
+En ocasiones se necesita convertir una lista a otros tipos de objetos. La conversión más común es **convertir una lista en vector**. Para ello puedes utilizar la función `unlist`.
+
+``` {.r .R}
+# Primer elemento de la lista a vector
+unlist(mi_lista[[1]], use.names = FALSE)
+```
+
+```         
+45 12 56 14 16
+```
+
+Si prefieres convertir la lista completa a vector, establece el argumento `use.names` como `FALSE`.
+
+``` r
+# Lista completa como vector
+unlist(mi_lista, use.names = FALSE)
+```
+
+```         
+"45"   "12"   "56"   "14"   "16"   "Coche"  "Bicicleta" "1"    "2"    "3"   
+"4"    "5"    "6"    "7"    "8"    "9"    "10"   "11"   "12"   
+```
+
+Ten en cuenta que en este caso todos los elementos son ahora caracteres.
+
+Además, la biblioteca `purrr` tiene algunas funciones similares a la función `unlist` pero en este caso **puedes especificar la clase de la salida**. En este ejemplo, estamos convirtiendo nuestra nueva lista a tipo \'double\' y luego a caracter.
+
+``` r
+mi_lista_3 <- list(c(1, 4), 2, 3)
+
+library(purrr)
+flatten_dbl(mi_lista_3) # 1 4 2 3
+flatten_chr(mi_lista_3) # "1.000000" "4.000000" "2.000000" "3.000000"
+```
+
+## **Convertir lista en data frame en R**
+
+Supón que tienes una lista que contiene datos de algunas variables. En ese caso, es posible que desees convertir tu lista a un data frame. Para lograrlo, puedes usar las funciones `unlist`, `matrix` y `data.frame` o `do.call` de la siguiente manera.
+
+``` r
+mi_lista_4 <- list(c(1, 7, 3), c(9, 8, 1))
+
+data.frame(matrix(unlist(mi_lista_4), nrow = length(mi_lista_4), byrow = TRUE))
+do.call(rbind.data.frame, mi_lista_4) # Similar
+```
+
+```         
+   X1  X2  X3
+1   1   7   3
+2   9   8   1
+```
+
+Si estás trabajando con caracteres, establece **`stringsAsFactors = FALSE`** para evitar que las columnas de caracteres se conviertan en factor.
+
+# **Matrices en R**
+
+Una matriz en R es una estructura de datos para **almacenar objetos del mismo tipo**. Si quieres almacenar diferentes objetos dentro de una estructura de datos en R, usa un data frame en su lugar. En este tutorial mostraremos los principales usos y cálculos con matrices en R.
+
+## **¿Cómo crear una matriz en R?**
+
+La función `matrix` permite una matriz en RStudio o R base, pasando como input un vector numérico, de caracteres o lógico.
+
+``` r
+data <- 1:6
+
+# Creando la matriz
+matrix(data)
+```
+
+```         
+      [, 1]
+[1, ]    1
+[2, ]    2
+[3, ]    3
+[4, ]    4
+[5, ]    5
+[6, ]    6
+```
+
+Como se puede apreciar en la salida, por defecto se creará una matriz de una columna y tantas filas como la longitud del vector. Sin embargo, es posible **establecer el número de columnas o el número de filas** con los argumentos `ncol` y `nrow`, respectivamente. También puedes especificar si la matriz está ordenada por filas o por columnas con el argumento `byrow`. **Por defecto**, la función ordenará la entrada **por columnas** (`byrow = FALSE`).
+
+``` r
+# Por columnas
+matrix(data, ncol = 2, byrow = FALSE) # byrow = FALSE por defecto
+matrix(data, ncol = 2, nrow = 3) # Equivalente
+matrix(data, nrow = 3) # Equivalente
+
+# Por filas
+matrix(data, ncol = 2, byrow = TRUE)
+```
+
+```         
+# Por columnas             # Por filas
+     [, 1] [, 2]                 [, 1] [, 2]
+[1, ]   1    4             [1, ]    1    2
+[2, ]   2    5             [2, ]    3    4
+[3, ]   3    6             [3, ]    5    6
+```
+
+Ahora bien, si tienes datos almacenados en vectores o en las columnas de un data frame, puedes usar `cbind` para concatenar columnas o `rbind` para concatenar filas, siendo el output una matriz. La clase de la salida se puede comprobar con la función `class` y la clase de los elementos con la función `typeof`.
+
+``` r
+x <- c(2, 7, 3, 6, 1)
+y <- c(3, 7, 3, 5, 9)
+
+# Por columnas
+cbind(x, y)
+
+# Por filas
+rbind(x, y)
+
+# Clase de la salida
+class(cbind(x, y))  # "matrix"
+
+# Tipo de dato de los elementos
+typeof(cbind(x, y)) # "double"
+```
+
+```         
+# Por columnas              # Por filas
+      x   y                    [, 1] [, 2] [, 3] [, 4] [, 5]
+[1, ] 2   3                 x    2     7     3     6     1   
+[2, ] 7   7                 y    3     7     3     5     9
+[3, ] 3   3
+[4, ] 6   5
+[5, ] 1   9
+```
+
+Ten en cuenta que puedes usar **cualquier tipo de datos dentro de una matriz**, siempre que sean **homogéneos**.
+
+``` r
+matrix(c(TRUE, TRUE, FALSE, TRUE), ncol = 2)
+matrix(c("rojo", "verde", "naranja", "negro"), ncol = 2)
+```
+
+```         
+     [, 1]  [, 2]              [, 1]    [, 2]
+[1, ] TRUE FALSE         [1, ] "rojo"  "naranja"
+[2, ] TRUE  TRUE         [2, ] "verde" "negro"
+```
+
+Además, puedes conocer las dimensiones de la matriz con la función `dim`.
+
+``` r
+matriz <- matrix(1:12, ncol = 2, byrow = FALSE)
+
+# Dimensiones de la matriz
+dim(matriz) # 6 2
+```
+
+El primer número de la salida de la función **`dim`** indica el número de filas (6) y el segundo el número de columnas (2).
+
+Ten en cuenta que la función `dim` también se puede utilizar para crear una matriz en R.
+
+``` R
+A <- c(3, 1, 6, 1, 2, 9)
+dim(A) <- c(3, 2)
+```
+
+```         
+   [, 1] [, 2]
+[1, ]    3     1
+[2, ]    1     2
+[3, ]    6     9
+```
+
+A modo esquemático, la siguiente tabla muestra las **funciones más comunes relacionadas con matrices**.
+
+|      **Función**      |          **Descripción**           |
+|:---------------------:|:----------------------------------:|
+| dim(), nrow(), ncol() |      Número de filas/columnas      |
+|        diag()         |       Diagonal de una matriz       |
+|          \*           | Multiplicación elemento a elemento |
+|         %\*%          |         Producto matricial         |
+|          %o%          |         Producto exterior          |
+|          %x%          |       Producto de Kronecker        |
+|   cbind(), rbind()    |       Agregar filas/columnas       |
+|          t()          |         Matriz traspuesta          |
+|       solve(A)        |       Inversa de la matriz A       |
+|      solve(A, b)      |          Solución a Ax=b           |
+|        eigen()        |     Autovalores y autovectores     |
+|         qr()          |         Descomposición QR          |
+|        chol()         |     Descomposicion de Cholesky     |
+|         svd()         |      Descomposición singular       |
+
+### **Añadir y eliminar columnas de matrices en R**
+
+Como mostramos antes, la función `cbind` puede usarse para crear una matriz. Sin embargo, el uso principal de la función es **agregar columnas a las estructuras de datos**. Para eliminar columnas, utiliza el operador `-` **indicando el índice de la columna en el segundo argumento** entre corchetes, como en el ejemplo.
+
+``` r
+# Añadir columna
+A <- cbind(A, c(6, 1, 7))
+
+# Añadir dos columnas
+A <- cbind(A, c(6, 1, 7), c(1, 6, 1))
+
+# Eliminar la primera columna
+A <- A[, -1]
+
+# Borrar la primera y la tercera columna
+A <- A[, -c(1, 3)]
+```
+
+### **Añadir y eliminar filas a una matriz en R**
+
+Equivalentemente a la función anterior, la función `rbind` se puede usar para **agregar filas** a objetos. También puedes eliminar filas de la misma manera que antes, pero indicando el índice en el primer argumento entre corchetes.
+
+``` r
+# Agregar fila
+A <- rbind(A, c(6, 1))
+
+# Agregar fila de cincos
+A <- rbind(A, 5)
+
+# Eliminar la segunda fila
+A <- A[-2, ]
+```
+
+### **Apilar matrices en R**
+
+La función `rbind` también se puede utilizar para apilar o combinar matrices:
+
+``` r
+x <- matrix(c(2, 7, 1, 3, 6, 1), ncol = 2, byrow = TRUE)
+y <- matrix(c(3, 7, 6, 3, 5, 9), ncol = 2, byrow = TRUE)
+
+# Apilando las matrices
+rbind(x, y)
+```
+
+```         
+[, 1] [, 2]
+[1, ]    2    7
+[2, ]    1    3
+[3, ]    6    1
+[4, ]    3    7
+[5, ]    6    3
+[6, ]    5    9
+```
+
+Además, si creas una lista de matrices en R y no conoces de antemano la longitud final que tendrá la lista, puedes usar la función `do.call` de la siguiente manera para unir las matrices:
+
+```         
+lista_matrices <- list(x, y)
+lista_matrices
+```
+
+```         
+[[1]]
+     [,1] [,2]
+[1,]    2    7
+[2,]    1    3
+[3,]    6    1
+
+[[2]]
+     [,1] [,2]
+[1,]    3    7
+[2,]    6    3
+[3,]    5    9
+```
+
+``` r
+do.call(rbind, lista_matrices)
+rbind(lista_matrices[[1]], lista_matrices[[2]]) # Equivalente
+```
+
+El código anterior devolverá la misma salida que `rbind(x, y)`, la diferencia es que con `do.call` no necesitamos saber el número de matrices que se apilarán. Si la lista contiene más matrices en su interior, la función seguirá funcionando.
+
+### **Añadir nombres a las filas y a las columnas**
+
+Puedes **cambiar los nombres de las filas y columnas de una matriz** con las funciones `rownames` y `colnames` .
+
+``` r
+B <- matrix(c(4, 5, 1, 10, 8, 3),
+             nrow = 2, ncol = 3, byrow = TRUE)
+
+# Agregar nombres a las filas
+rownames(B) <- c("Fila 1", "Fila 2")
+rownames(B) <- paste0("Fila ", 1:nrow(B)) # Equivalente
+
+# Agregar nombres a las columnas
+colnames(B) <- c("Columna 1", "Columna 2", "Columna 3")
+colnames(B) <- paste0("Columna ", 1:ncol(B)) # Equivalente
+B
+```
+
+```         
+ Columna 1 Columna 2 Columna 3
+Fila 1        4        5        1
+Fila 2       10        8        3
+```
+
+Nótese que puedes **renombrar las columnas y filas** de la matriz de la misma manera.
+
+Además, con la función `attributes` puedes **acceder a la dimensión y los nombres de columna y fila** de tu matriz.
+
+```         
+attributes(B)
+```
+
+```         
+$`dim`
+[1] 2 3
+
+$dimnames
+$dimnames[[1]]
+[1] "Fila 1" "Fila 2"
+
+$dimnames[[2]]
+[1] "Columna 1" "Columna 2" "Columna 3"
+```
+
+Si solo quieres devolver los **nombres de columna y fila**, puedes utilizar la función `dimnames` y acceder a los elementos de la lista para tener los nombres de las filas o de las columnas.
+
+```         
+dimnames(B)
+```
+
+```         
+[[1]]
+[1] "Fila 1" "Fila 2"
+
+[[2]]
+[1] "Columna 1" "Columna 2" "Columna 3"
+```
+
+### **Eliminar nombres de las filas y las columnas de las matrices**
+
+En caso de que estés trabajando con una matriz con nombres y quieras deshacerte de ellos, simplemente puedes **eliminar los nombres de las filas o columnas** asignándoles el valor `NULL` o usando la función `unname` para borrar todos los nombres.
+
+```         
+# Borrar nombres de las columnas
+colnames(B) <- NULL
+
+# Borrar nombres de las filas
+rownames(B) <- NULL
+
+# Eliminar nombres de 
+# filas y columnas a la vez
+unname(B)
+```
+
+## **Acceder a los elementos de una matriz en R**
+
+Accceder a los elementos de una matriz es similar a acceder a los elementos de un data frame en R. La principal manera para acceder a los datos es usar `matriz[filas, columnas]`. Sin embargo, existen ciertas diferencias entre las estructuras de datos.
+
+```         
+matriz <- matrix(c(1, 5, 8, 1, 3, 2), ncol = 3)
+matriz
+```
+
+```         
+     [, 1] [, 2] [, 3]
+[1, ]    1    8     3
+[2, ]    5    1     2
+```
+
+``` r
+# Primer elemento de la primera columna
+matriz[1]    # 1
+matriz[[1]]  # Equivalente
+matriz[1, 1] # Equivalente
+
+# Segunda fila, tercera columna
+matriz[2, 3] # 2
+
+# Primera fila
+matriz[1, ] # 1 8 3
+
+# Segunda columna
+matriz[, 2] # 8 1
+
+# Primera y segunda columna, primera fila
+matriz[1, 1:2] # 1 8
+
+# Primera y tercera columna, segunda fila
+matriz[2, c(1, 3)] # 5 2
+matriz[2, c(TRUE, FALSE, TRUE)] # Equivalente
+
+# Todas las columnas excepto la segunda
+matriz[, -2]
+
+# Última fila de la matriz
+matriz[nrow(matriz), ] # 5 1 2
+
+# Última columna de la matriz
+matriz[, ncol(matriz)] # 3 2
+```
+
+Ten en cuenta que **al devolver filas o columnas individuales, la salida será un vector**. Si quieres evitar esto, establece `drop = FALSE`.
+
+```         
+matriz[1, , drop = FALSE]
+```
+
+```         
+      [, 1] [, 2] [, 3]
+[1, ]    1    8    3
+```
+
+Dejamos en blanco el segundo argumento porque estamos seleccionando todas las columnas.
+
+Además, si la matriz tiene nombres, puedes **acceder a los elementos indexándolos con los nombres**.
+
+``` r
+C <- matrix(c(5, 3, 2, 52, 34, 12), nrow = 2, ncol = 3, byrow = TRUE)
+
+rownames(C) <- c("Fila 1", "Fila 2")
+colnames(C) <- c("Columna 1", "Columna 2", "Columna 3")
+
+# Primera fila, columnas 1 y 3
+C["Fila 1", c("Columna 1", "Columna 3")]
+```
+
+```         
+Columna 1 Columna 3
+        5         2 
+```
+
+## **Eliminar valores NA, NaN e Inf de una matriz**
+
+En ocasiones tendrás que lidiar con valores perdidos u omitidos. Existen diferentes tipos como los valores `NA` (no disponible), `NaN` (no es un número) e `Inf` (infinito). Ten en cuenta que puedes eliminar las filas o columnas que contienen estos valores o reemplazarlos con otros valores. Considera la siguiente matriz:
+
+```         
+Matriz con valores omitidos
+C <- matrix(c(14, NaN, 3, Inf, -5, 4, 1, NA), ncol = 4)
+C
+```
+
+```         
+    [, 1] [, 2] [, 3] [, 4]
+[1, ]   14     3    -5     1
+[2, ]  NaN   Inf     4    NA
+```
+
+Puedes eliminar las filas o las columnas con valores no finitos con las funciones `rowSums` o `colSums` e `is.finite`.
+
+```         
+# Borrar todas las filas con valores no finitos
+C[!rowSums(!is.finite(C)), ] # 14  3 -5  1
+
+# Borrar todas las columnas con valores no finitos
+C[, !colSums(!is.finite(C)), drop = FALSE]
+```
+
+En caso de que quieras reemplazar los valores, puedes detectar los valores no finitos usando `!is.finite` y los valores `NA` con la función `is.na` y luego asignar los valores que quieras. En este caso vamos a reemplazarlos con 0.
+
+```         
+# Reemplazar los NA con 0
+C[is.na(C)] <- 0
+C
+```
+
+```         
+ [, 1] [, 2] [, 3] [, 4]
+[1, ]   14    3   -5    1
+[2, ]    0  Inf    4    0
+```
+
+```         
+C[!is.finite(C)] <- 0
+C
+```
+
+```         
+[,1] [,2] [,3] [,4]
+[1,]   14    3   -5    1
+[2,]    0    0    4    0
+```
+
+# **Data frame en R**
+
+Los data frames (marcos de datos) son **el objeto más habitual para almacenar datos en R**. En este tipo de objeto, cada individuo o fecha corresponde a una fila y cada columna corresponde a una variable. Dentro de este tipo de estructura puedes almacenar diferentes tipos de datos.
+
+### **¿Data frame o matriz?**
+
+Una cuestión habitual es preguntarse en qué casos debes usar un data frame o una matriz en R. Los data frames son estructuras de datos muy similares a las matrices, pero en el caso de los data frames puedes tener diferentes tipos de datos dentro de las columnas. En consecuencia, la diferencia es que **las matrices almacenan tipos de datos homogéneos** mientras que los **data frames almacenan tipos de datos heterogéneos**. Como ejemplo, supón que tienes los siguientes datos:
+
+``` r
+Producto <- c("Zumo", "Queso", "Yogurt")
+Seccion <- c("Bebidas", "Productos lácteos", "Productos lácteos")
+Unidades <- c(2, 1, 10)
+```
+
+Puedes almacenar esas variables como matriz utilizando la función `cbind`:
+
+``` r
+x <- cbind(Producto, Seccion, Unidades)
+```
+
+Si imprimes la nueva variable obtendrás el siguiente resultado:
+
+``` R
+       Producto      Seccion       Unidades
+ [1,] "Zumo"    "Bebidas"             "2"
+ [2,] "Queso"   "Productos lácteos"   "1"
+ [3,] "Yogurt"  "Productos lácteos"  "10"
+```
+
+Sin embargo, puedes notar que el resultado no es satisfactorio, ya que todas las variables se han transformado a la clase caracter. En cambio, si usas la función `data.frame`, mantendrás el tipo original de las variables.
+
+Los data frames, a diferencia de las matrices, pueden almacenar diferentes tipos de objetos.
+
+## **¿Cómo crear un data frame en R?**
+
+En R **es muy sencillo crear un nuevo data frame**. Puedes unir tus variables haciendo uso de la función `data.frame` para convertir tus datos a la estructura de datos de tipo data frame. Primero, necesitas tener algunas variables almacenadas para crear el marco de datos en R. En este ejemplo vamos a definir algunas variables de datos meteorológicos. Ten en cuenta que todos los vectores tienen la misma longitud.
+
+``` r
+temp <- c(20.37, 18.56, 18.4, 21.96, 29.53, 28.16,
+          36.38, 36.62, 40.03, 27.59, 22.15, 19.85)
+humedad <- c(88, 86, 81, 79, 80, 78,
+             71, 69, 78, 82, 85, 83)
+precipitaciones <- c(72, 33.9, 37.5, 36.6, 31.0, 16.6,
+                     1.2, 6.8, 36.8, 30.8, 38.5, 22.7)
+mes <- c("enero", "febrero", "marzo", "abril", "mayo", "junio",
+         "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
+```
+
+Para unir los datos puedes usar la función `data.frame`. En este ejemplo, vamos a almacenar el data frame en una variable llamada `datos`:
+
+``` r
+datos <- data.frame(mes = mes, temperatura = temp, humedad = humedad,
+                    precipitaciones = precipitaciones)
+names(datos) # Nombres de las variables (columnas)
+```
+
+```         
+"mes"  "temperatura"  "humedad"  "precipitaciones" 
+```
+
+Primero, es habitual **mostrar los primeros valores** para hacer algunas comprobaciones. Para ello, puedes hacer uso de la función `head` en R, que por defecto mostrará las 6 primeras filas del data frame.
+
+``` r
+# Primeras filas de nuestro conjunto de datos
+head(datos)
+```
+
+```         
+Output
+       mes   temperatura  humedad  precipitaciones
+1    enero       20.37       88        72.0
+2  febrero       18.56       86        33.9
+3    marzo       18.40       81        37.5
+4    abril       21.96       79        36.6
+5     mayo       29.53       80        31.0
+6    junio       28.16       78        16.6
+```
+
+En segundo lugar, puedes utilizar la función `summary` que devolverá un **resumen estadístico de las variables** (columnas) del conjunto de datos.
+
+``` r
+summary(datos)
+```
+
+```         
+Resumen descriptivo de los datos
+     mes      temperatura      humedad      precipitaciones
+april   :1   Min.   :18.40   Min.   :69.0   Min.   : 1.20
+august  :1   1st Qu.:20.24   1st Qu.:78.0   1st Qu.:21.18
+december:1   Median :24.87   Median :80.5   Median :32.45
+february:1   Mean   :26.63   Mean   :80.0   Mean   :30.37
+january :1   3rd Qu.:31.24   3rd Qu.:83.5   3rd Qu.:36.98
+```
+
+También puedes hacer uso de los **data frames de ejemplo que R proporciona**. Para buscarlos, puedes llamar a la función `data`:
+
+``` r
+data()
+```
+
+Una vez ejecutado, se abrirá una ventana con una lista de conjuntos de datos disponibles:
+
+```         
+Data sets in package "datasets":
+ AirPassengers Monthly Airline Passenger Numbers 1949-1960
+ BJsales Sales Data with Leading Indicator
+ …
+```
+
+Ahora puedes cargar el que quieras con:
+
+``` r
+data(nombre_del_conjunto_de_datos)
+```
+
+Como ejemplo, si quieres cargar el conjunto de datos `AirPassengers` en el espacio de trabajo puedes escribir lo siguiente:
+
+``` r
+data(AirPassengers)
+```
+
+### **Crear un data frame vacío en R**
+
+En ocasiones puede resultar interesante **inicializar un data frame vacío** y rellenarlo dentro de un bucle o añadir las filas mediante algún procedimiento. En este caso, la forma más recomendada de crear una estructura de datos vacía es utilizando la función `data.frame` y creando variables vacías. Sin embargo, en el siguiente bloque de código mostraremos esta manera y varias alternativas más.
+
+``` r
+# Variables vacías
+dataset <- data.frame(mes = character(),
+                      temperatura = numeric(),
+                      precipitaciones = numeric(),
+                      humedad = numeric())
+
+# Copiando la estructura de otro conjunto de datos
+dataset <- datos[FALSE, ] # Recuerda que creamos el objeto 'datos' antes
+
+# Convirtiendo una matriz en data.frame y asignándole nombres a las columnas
+dataset <- data.frame(matrix(ncol = 4, nrow = 0))
+nombres_columnas <- c("mes", "temperatura", "precipitaciones", "humedad")
+colnames(dataset) <- nombres_columnas
+
+# Equivalente a la última opción
+dataset <- data.frame(matrix(ncol = 4, nrow = 0,
+                      dimnames = list(NULL, c("mes", "temperatura",
+                                              "precipitaciones", "humedad"))))
+```
+
+## **Accediendo a los datos del data frame**
+
+Hay varias formas de acceder a las columnas almacenadas en los data frames:
+
+1.  Usando el **signo del dollar** (\$) y el nombre de la columna.
+
+2.  Usando **corchetes con el índice** de la columna después de una coma.
+
+Como ejemplo, si quieres seleccionar la columna `mes` del data frame que creamos antes, ejecuta lo siguiente:
+
+``` r
+datos$mes
+datos[, 1] # Equivalente
+```
+
+También puedes **seleccionar varias variables a la vez**. Para ello puedes:
+
+1.  Crear una secuencia de índices.
+
+2.  Crear un vector con la función `c` con los nombres de las variables o índices que quieras seleccionar.
+
+``` {.r .R}
+# Seleccionando las columnas 1 a 3 con una secuencia
+datos[, 1:3]
+
+# Seleccionando columnas con la función 'c'
+datos[, c("temperatura", "precipitaciones")]
+datos[, c(2, 4)] # Equivalente
+```
+
+Del mismo modo, puedes acceder a filas del data frame con `datos[1, ]` o `datos[1:2, ]` para seleccionar la primera fila o la primera y la segunda, o seleccionar solo algunos puntos de datos seleccionando filas y columnas a la vez:
+
+``` r
+# Observación de la primera
+# fila y segunda columna
+data[1, 2]
+
+# Primera y segunda fila
+# de la segunda columna
+data[1:2, 2]
+```
+
+### **Acceso directo utilizando la función attach**
+
+**Si no quieres escribir el nombre del data frame una y otra vez**, simplemente puedes hacer un uso directo de las variables si pasas el nombre del data frame a la función `attach`:
+
+``` r
+attach(datos)
+temperatura # Ahora tenemos acceso directo a las variables
+```
+
+Si quieres **deshabilitar el acceso directo**, solo tienes que usar la función `detach`:
+
+``` r
+detach(datos)
+temperatura # Ya no puedes acceder a esta variable. Aparecerá un error.
+```
+
+## **Añadir columnas y filas a un data frame**
+
+A veces necesitas modificar los datos para **agregar nuevas filas o columnas, o eliminarlas**. Para los siguientes ejemplos, utilizaremos el conjunto de datos `cars`, registrado en la década de 1920, que forma parte de los conjuntos de datos de ejemplo de R. Puedes cargarlo ejecutando `data(cars)`. La base de datos contiene 50 filas y 2 variables:
+
+-   speed: velocidad (mph).
+
+-   dist: distancia de frenado (ft).
+
+Si ejecutas `head(cars)` obtendrás el siguiente resultado:
+
+```         
+Output of head(cars)
+   speed  dist
+ 1   4     2
+ 2   4    10
+ 3   7     4
+ 4   7    22
+ 5   8    16
+ 6   9    10
+```
+
+Supón que quieres crear una nueva variable para transformar la velocidad en kilómetros por hora (km/h) y la distancia en metros. Recuerda que:
+
+`kilómetro = milla/0.62137 y metro = pie/3.2808`
+
+Entonces, ahora podrías **agregar dos nuevas columnas** llamadas `kph` (kilómetros por hora) y `meters` (metros) con el siguiente código:
+
+``` r
+cars$kph <- cars$speed / 0.62137
+cars$meters <- cars$dist / 3.2808
+```
+
+También puedes hacer uso de la función `cbind`. En caso de que quisieses agregar una nueva fila, podrías usar la función `rbind`.
+
+``` r
+kph <- cars$speed / 0.62137
+meters <- cars$dist / 3.2808
+cars <- cbind(cars[, c(1, 2)], kph, meters)
+```
+
+Resultando en:
+
+```         
+     speed dist     kph       meters
+ 1     4    2    6.437388   0.6096074
+ 2     4   10    6.437388   3.0480371
+ 3     7    4   11.265430   1.2192148
+ 4     7   22   11.265430   6.7056815
+ 5     8   16   12.874777   4.8768593
+ 6     9   10   14.484124   3.0480371
+```
+
+Agrega nuevas filas con la función **`rbind`** y nuevas columnas con la función **`cbind`**.
+
+## **Eliminar columnas y filas de un data frame**
+
+Ahora, si quieres **borrar variables o filas** de un data frame, tienes varias opciones:
+
+1.  Usar el signo menos (-) e indicar las columnas o filas que quieras borrar.
+
+2.  Crear un subconjunto de los datos que quieras conservar.
+
+Como ejemplo, borraremos las variables `speed` y `dist`y para **evitar sobrescribir el conjunto de datos original** guardaremos nuestros resultados en un nuevo data frame llamado `cars2`.
+
+``` r
+# Borrando la primera y segunda columna con el signo -
+cars2 <- cars[, -c(1, 2)]
+
+# Seleccionar solo las columnas que queremos conservar
+cars2 <- cars[, c("kph", "meters")] 
+```
+
+Si vuelves a utilizar la función `head`, podrás ver el nuevo data frame.
+
+```         
+head(cars2)
+```
+
+``` {.r .R}
+       kph     meters
+1   6.437388 0.6096074
+2   6.437388 3.0480371
+3  11.265430 1.2192148
+4  11.265430 6.7056815
+5  12.874777 4.8768593
+6  14.484124 3.0480371
+```
+
+## **Ordenando y filtrando datos de un data frame en R**
+
+Es habitual **ordenar o filtrar los datos** dentro de los data frames por los valores de alguna variable.
+
+### **Ordenar data frames**
+
+Considera, como ilustración, el conjunto de datos `mtcars` y cárgalos ejecutando `data(mtcars)`. Podemos acceder al índice de ordenación de cualquier variable con la función `order`.
+
+``` r
+ii <- order(mtcars$hp) # Índice de ordenación en base a la variable 'hp'
+                       # (caballos de fuerza)
+```
+
+El vector de índices de ordenación establece el orden en que tienen que ser elegidas las filas del data frame para obtener la ordenación deseada.
+
+``` r
+# Ordenando por 'hp' (de más bajo a más alto)
+# Solo mostramos las primeras 4 columnas
+head(mtcars[ii, 1:4]) 
+```
+
+``` r
+Output
+                 mpg cyl  disp  hp
+Honda Civic     30.4  4   75.7  52
+Merc 240D       24.4  4  146.7  62
+Toyota Corolla  33.9  4   71.1  65
+Fiat 128        32.4  4   78.7  66
+Fiat X1-9       27.3  4   79.0  66
+Porsche 914-2   26.0  4  120.3  91
+```
+
+También puedes ordenar de mayor a menor haciendo uso del signo menos.
+
+``` r
+ii <- order(-mtcars$hp)
+head(mtcars[ii,])
+```
+
+``` r
+Output
+                    mpg  cyl disp  hp
+Maserati Bora       15.0  8  301  335
+Ford Pantera L      15.8  8  351  264
+Duster 360          14.3  8  360  245
+Camaro Z28          13.3  8  350  245
+Chrysler Imperial   14.7  8  440  230
+Lincoln Continental 10.4  8  460  215
+```
+
+Además, puedes **establecer diferentes condiciones para ordenar los datos**. Puedes ordenar por alguna variable y, en caso de empate, ordenar por otra. En el siguiente ejemplo ordenaremos el data frame por la variable llamada `cyl` y luego por la variable `hp`.
+
+``` r
+ii <- order(mtcars$cyl, mtcars$hp)
+head(mtcars[ii, 1:4]) 
+```
+
+```         
+Output
+               mpg  cyl  disp  hp
+Honda Civic    30.4  4   75.7  52
+Merc 240D      24.4  4  146.7  62
+Toyota Corolla 33.9  4   71.1  65
+Fiat 128       32.4  4   78.7  66
+Fiat X1-9      27.3  4   79.0  66
+Porsche 914-2  26.0  4  120.3  91
+```
+
+### **Filtrar data frames**
+
+Filtrar un data frame consiste en **obtener una submuestra que cumpla con algunas condiciones**. Para este propósito, puedes usar la función `subset` para crear subconjuntos según los valores de alguna columna. Proporcionaremos algunos ejemplos basados ​​en el conjunto de datos `mtcars`:
+
+Subconjunto donde el número de cilindros del automóvil es **exactamente 6 y** la potencia en caballos es **mayor que 115**.
+
+```         
+subset(mtcars, cyl == 6 & hp > 115)
+```
+
+```         
+Output
+              mpg cyl  disp  hp drat   wt qsec vs am gear carb
+Merc 280     19.2   6 167.6 123 3.92 3.44 18.3  1  0    4    4
+Merc 280C    17.8   6 167.6 123 3.92 3.44 18.9  1  0    4    4
+Ferrari Dino 19.7   6 145.0 175 3.62 2.77 15.5  0  1    5    6
+```
+
+Lo mismo que en el ejemplo anterior, pero **solo mostramos las variables** `mpg`, `cyl` y `disp` utilizando el argumento `select`.
+
+```         
+subset(mtcars, cyl == 6 & hp > 115, select = c(mpg, cyl, disp))
+```
+
+```         
+Output
+              mpg cyl  disp
+Merc 280     19.2   6 167.6
+Merc 280C    17.8   6 167.6
+Ferrari Dino 19.7   6 145.0
+```
+
+Ahora en lugar de utilizar la condición AND usaremos la condición OR. En este caso seleccionaremos los coches donde la variable `wt` es menor que 2 o la variable `hp` es mayor a 115.
+
+```         
+subset(mtcars, wt < 2 | hp > 115)
+```
+
+```         
+Output
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+```

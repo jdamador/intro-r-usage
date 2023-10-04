@@ -1,5 +1,5 @@
 ---
-title: "Clase uno: Introducción a R"
+title: "Clase Uno: Material de Introducción"
 author: "Daniel Amador Salas"
 output: rmdformats::downcute
 ---
@@ -8,13 +8,13 @@ output: rmdformats::downcute
 
 Para trabajar con R es necesario conocer un poco del vocabulario usado en en este lenguaje de programación. Los siguientes son conceptos básicos que usaremos a lo largo de todo el libro.
 
-Editor de texto para rutinas de código (Rojo).
+-   Editor de texto para rutinas de código (Rojo).
 
-La consola interactiva de R (Verde).
+-   La consola interactiva de R (Verde).
 
-Ambiente/Historial (Azul).
+-   Ambiente/Historial (Azul).
 
-Archivos/Gráficos/Paquetes/Ayuda/Visor(Amarillo).
+-   Archivos/Gráficos/Paquetes/Ayuda/Visor(Amarillo).
 
 ![](imgs/Entorno%20R.png)
 
@@ -170,11 +170,11 @@ Lo que acabamos de hacer es crear un proyecto autocontenido, entonces, cuando ab
 
 Les presentamos algunos consejos para facilitar la organización de proyectos.
 
--   Mantener datos como \"sólo lectura\": Es importante mantener nuestros datos originales y no modificarlos, tener ese respaldo siempre es de utilidad.
+-   Mantener datos como "sólo lectura": Es importante mantener nuestros datos originales y no modificarlos, tener ese respaldo siempre es de utilidad.
 
--   Limpiar datos: Es muy común que los datos que vayamos a usar requieran algunos cambios o preprocesamiento para tener un formato compatible con R. Cuando se hace esto es bueno crear una carpeta que contenga los scripts que se utilizaron para preparar los datos y otra por aparte que contenga los datos \"limpios\" o ya procesados.
+-   Limpiar datos: Es muy común que los datos que vayamos a usar requieran algunos cambios o preprocesamiento para tener un formato compatible con R. Cuando se hace esto es bueno crear una carpeta que contenga los scripts que se utilizaron para preparar los datos y otra por aparte que contenga los datos "limpios" o ya procesados.
 
--   Tratar la salida generada como disponible: Los \"outputs\" debería ser descartables ya que se pueden volver a generar corriendo de nuevo los scripts. Es bueno también guardar los scripts en un mismo lugar para poder acceder a ellos rápidamente, en caso de sean necesarios distintos análisis.
+-   Tratar la salida generada como disponible: Los "outputs" debería ser descartables ya que se pueden volver a generar corriendo de nuevo los scripts. Es bueno también guardar los scripts en un mismo lugar para poder acceder a ellos rápidamente, en caso de sean necesarios distintos análisis.
 
 -   Mantener organizadas las carpetas: se recomienda separar en carpetas distintas los scripts que son para funciones útiles que se van a reutilizar a lo largo del proyecto y otra para los scripts de análisis, esto para evitar la duplicación.
 
@@ -182,8 +182,9 @@ Les presentamos algunos consejos para facilitar la organización de proyectos.
 
 -   El paquete [ProjectTemplate](http://projecttemplate.net/) ayuda en la automatización de la gestión:
 
-```         
-#install.packages("ProjectTemplate") library("ProjectTemplate")
+``` r
+#install.packages("ProjectTemplate") 
+#library("ProjectTemplate")
 ```
 
 ```         
@@ -194,16 +195,24 @@ Les presentamos algunos consejos para facilitar la organización de proyectos.
 ## Loading required package: tibble
 ```
 
-```         
+``` r
 #create.project("../my_project", merge.strategy = "allow.non.conflict")
 ```
-**Carpetas principales:**
-* data
-* docs
-* graphs
-* reports
-* src
-* test
+
+## Carpetas principales:
+
+-   data: en este directorio vamos a colocar nuestros datos, ejemplo: `.csv, .txt, .json`.
+
+-   docs: en este directorio vamos a colocar todos las documentaciones que se generen o material de referencia, ejemplo: `documentos word, pdf`.
+
+-   graphs: en este directorio vamos a colocar todas las visualizaciones generadas: ejemplo: `.png, .jpg, .jpge.`
+
+-   reports: en este directorio vamos a colocar todos los informes generados, los informes se generan como un archivo `.rmd` y se exportan en un `.html o .pdf`
+
+-   src: en este directorio vamos a colocar todos los \`script de R\`\` que generemos, es decir todos los archivos de codigo R que utilicemos para nuestro análisis.
+
+-   test: en este directorio vamos a colocar todos los experimentos que queramos realizar sobre los datos a modo de prueba.
+
 ## Paquetes de R
 
 R puede ser expandido con paquetes. Cada paquete es una colección de funciones diseñadas para atender una tarea específica. Por ejemplo, hay paquetes para trabajo visualización geoespacial, análisis psicométricos, mineria de datos, interacción con servicios de internet y muchas otras cosas más.
@@ -347,7 +356,7 @@ Es posible realizar operaciones aritméticas con datos de tipo **entero** y **nu
 
 Si escribes una operación aritmética en la consola de R y das Enter, esta se realiza y se devuelve su resultado.
 
-``` R
+``` r
 15 * 3
 ```
 
@@ -357,7 +366,7 @@ Si escribes una operación aritmética en la consola de R y das Enter, esta se r
 
 Cuando intentas realizar una operación aritmética con otro tipo de dato, R primero intentará coercionar ese dato a uno numérico. Si la coerción tiene éxito se realizará la operación normalmente, si falla, el resultado será un error.
 
-``` R
+``` r
 4 + "tres"
 ```
 
@@ -365,9 +374,9 @@ Cuando intentas realizar una operación aritmética con otro tipo de dato, R pri
 ## Error in 4 + "tres": argumento no-numérico para operador binario
 ```
 
-El mensaje *\"non-numeric argument for binary operator\"* aparece siempre que intentas realizar una operación aritmética con un argumento no numérico. Si te encuentras un un error que contiene este mensaje, es la primera pista para que identifiques donde ha ocurrido un problema.
+El mensaje *"non-numeric argument for binary operator"* aparece siempre que intentas realizar una operación aritmética con un argumento no numérico. Si te encuentras un un error que contiene este mensaje, es la primera pista para que identifiques donde ha ocurrido un problema.
 
-``` R
+``` r
 NA - 66
 ```
 
@@ -375,7 +384,7 @@ NA - 66
 ## [1] NA
 ```
 
-``` R
+``` r
 21 * NA
 ```
 
@@ -383,7 +392,7 @@ NA - 66
 ## [1] NA
 ```
 
-``` R
+``` r
 NA ^ 13
 ```
 
@@ -397,7 +406,7 @@ Entre los operadores aritméticos, el de división entera o **módulo** requiere
 
 Por ejemplo, si hacemos una división entera de 4 entre 2, el resultado será 0. Esta es una división exacta y no tiene residuo.
 
-``` R
+``` r
 4 %% 2
 ```
 
@@ -407,7 +416,7 @@ Por ejemplo, si hacemos una división entera de 4 entre 2, el resultado será 0.
 
 En cambio, si hacemos una división entera de 5 entre 2, el resultado será 1, pues este es el residuo de la operación.
 
-``` R
+``` r
 5 %% 2
 ```
 
@@ -434,7 +443,7 @@ Sin embargo, al usar los operadores `>`, `>=`, `<` y `<=` con cadenas de texto, 
 
 Por ejemplo, `"casa" > "barco"` nos devuelve `TRUE`.
 
-``` R
+``` r
 "casa" > "barco"
 ```
 
@@ -442,7 +451,7 @@ Por ejemplo, `"casa" > "barco"` nos devuelve `TRUE`.
 ## [1] TRUE
 ```
 
-Este resultado se debe a que se ha hecho una comparación por orden alfabético. En este caso, la palabra \"casa\" tendría una posición posterior a \"barco\", pues empieza con \"c\" y esta letra tiene una posición posterior a la \"b\" en el alfabeto. Por lo tanto, es verdadero que sea \"mayor\".
+Este resultado se debe a que se ha hecho una comparación por orden alfabético. En este caso, la palabra "casa" tendría una posición posterior a "barco", pues empieza con "c" y esta letra tiene una posición posterior a la "b" en el alfabeto. Por lo tanto, es verdadero que sea "mayor".
 
 ## Operadores lógicos
 
@@ -471,7 +480,7 @@ Para realizar operaciones lógicas, todos los valores numéricos y complejos dis
 
 Por ejemplo, `5 | 0` resulta en `TRUE` y `5 & FALSE` resulta en `FALSE`. Podemos comprobar lo anterior con la función `isTRUE()`.
 
-``` R
+``` r
 5 | 0
 ```
 
@@ -483,7 +492,7 @@ Estos operadores se pueden combinar para expresar relaciones complejas.
 
 Por ejemplo, la negación `FALSE` Y `FALSE` dará como resultado `TRUE`.
 
-``` R
+``` r
 !(FALSE | FALSE)
 ```
 
@@ -502,7 +511,7 @@ Este es probablemente el operador más importante de todos, pues nos permite asi
 
 En este ejemplo, asignamos valores a las variables `estatura` y `peso`.
 
-``` R
+``` r
 estatura <- 1.73
 peso = 83
 ```
@@ -527,5 +536,3 @@ En la tabla siguiente se presenta el orden en que ocurren las operaciones que he
 | 6         | `&`                         |
 | 7         | `|`                         |
 | 8         | `<-`                        |
-
-## 

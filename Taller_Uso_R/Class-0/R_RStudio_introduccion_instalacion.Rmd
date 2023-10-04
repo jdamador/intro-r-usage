@@ -4,8 +4,7 @@ author: "Daniel Amador Salas"
 output: rmdformats::downcute
 ---
 
-```{=html}
-```
+
 # El concepto detrás de R
 
 R es un lenguaje de programación y entorno computacional de código abierto gratuito dedicado a la estadística. Decimos que es un lenguaje de programación porque nos permite darle instrucciones, mediante código, a nuestro computador para que realice ciertas tareas; para ello es necesario un intérprete para el código y eso es a lo que llamamos entorno computacional. Cuando instalamos R en nuestra computadora en realidad lo que estamos instalando es el entorno computacional, y para que podamos hacer algo en ese entorno necesitamos conocer la manera de escribir instrucciones que el software pueda interpretar y ejecutar. Eso es lo que aprenderemos a hacer en este curso.
@@ -70,9 +69,9 @@ Si por alguna razón estás utilizando versiones de Mac OS 8.6 a 9.2 (y Mac OS X
 
 Una alternativa para instalar R en macOS es usar el administrador de paquetes Homebrew. Para ese propósito solo necesitas escribir lo siguiente en la terminal correspondiente:
 
-```{script}
+``{script}
 brew install r
-```
+``
 
 ## Instalar R en GNU/Linux
 
