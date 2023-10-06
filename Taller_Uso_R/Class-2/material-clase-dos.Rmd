@@ -963,7 +963,7 @@ $C
 [1]  1  2  3  4  5  6  7  8  9 10 11 12  1  2  3  4  5  6  7  8  9 10 11 12
 ```
 
-Nótese que el elemento \'C\' ya **no es una matriz**.
+Nótese que el elemento 'C' ya **no es una matriz**.
 
 ## **Comparar dos listas en R**
 
@@ -1044,7 +1044,7 @@ unlist(mi_lista, use.names = FALSE)
 
 Ten en cuenta que en este caso todos los elementos son ahora caracteres.
 
-Además, la biblioteca `purrr` tiene algunas funciones similares a la función `unlist` pero en este caso **puedes especificar la clase de la salida**. En este ejemplo, estamos convirtiendo nuestra nueva lista a tipo \'double\' y luego a caracter.
+Además, la biblioteca `purrr` tiene algunas funciones similares a la función `unlist` pero en este caso **puedes especificar la clase de la salida**. En este ejemplo, estamos convirtiendo nuestra nueva lista a tipo 'double' y luego a caracter.
 
 ``` r
 mi_lista_3 <- list(c(1, 4), 2, 3)
@@ -1173,7 +1173,7 @@ El primer número de la salida de la función **`dim`** indica el número de fil
 
 Ten en cuenta que la función `dim` también se puede utilizar para crear una matriz en R.
 
-``` R
+``` r
 A <- c(3, 1, 6, 1, 2, 9)
 dim(A) <- c(3, 2)
 ```
@@ -1511,7 +1511,7 @@ x <- cbind(Producto, Seccion, Unidades)
 
 Si imprimes la nueva variable obtendrás el siguiente resultado:
 
-``` R
+``` r
        Producto      Seccion       Unidades
  [1,] "Zumo"    "Bebidas"             "2"
  [2,] "Queso"   "Productos lácteos"   "1"

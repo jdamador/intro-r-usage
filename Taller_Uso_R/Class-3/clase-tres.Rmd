@@ -1,0 +1,1806 @@
+---
+title: "Clase Tres: Manejo de Datos"
+author: "Daniel Amador Salas"
+output: rmdformats::downcute
+---
+
+# Ordenar datos en R
+
+## La función order en R
+
+La función `order` devuelve una permutación del orden de los elementos de un vector. La sintaxis con descripciones resumidas de los argumentos es la siguiente:
+
+``` r
+# Sintaxis
+order(x, # Secuencia de vectores de la misma longitud
+      decreasing = FALSE, # Ordenar en orden creciente (FALSE) o decreciente (TRUE)
+      na.last = TRUE,     # Poner valores NA al final (TRUE) o al principio (FALSE)
+      method = c("auto", "shell", "radix")) # Método usado. Por defecto 'auto'
+```
+
+``` r
+sort.list(x, # Vector
+          decreasing = FALSE,
+          partial = NULL,    # Vector de índices para ordenado parcial
+          na.last = TRUE,
+          method = c("auto", "shell", "quick", "radix"))
+```
+
+La principal diferencia entre `order` y `sort.list` es que el primero está diseñado para más de un vector de la misma longitud. Sin embargo, es común usar la función `order` con un solo vector.
+
+``` r
+v <- c(34, 47, 25, 14)
+order(v)  
+
+# sort.list(v) # Equivalente
+```
+
+```         
+Output
+4 3 1 2
+```
+
+**La salida es un vector de índices**, que en este ejemplo significa que si quieres ordenar el vector en orden ascendente, debes colocar el cuarto elemento primero (14), luego el tercero (25), después el primero (34) y el mayor valor será el segundo (47). Si estableces el argumento `decreasing` como `TRUE`, tendrás el vector de índices en orden descendente.
+
+``` r
+order(v, decreasing = TRUE)  
+```
+
+```         
+Output
+2 1 3 4
+```
+
+Si el vector contiene algún valor `NA`, estará al final del vector de índices de forma predeterminada.
+
+``` r
+vec <- c(24, 26, 2, 5, NA, 40, 12, NA)
+order(vec)
+```
+
+```         
+Output
+3 4 7 1 2 6 5 8
+```
+
+Si quieres que los valores `NA` se muestren al principio, puedes establecer el argumento `na.last` en `FALSE`. Si prefieres eliminar los valores `NA`, puedes usar la función `na.omit` o utilizar algún procedimiento similar para eliminar valores omitidos.
+
+``` r
+order(vec, na.last = FALSE)
+```
+
+```         
+Output
+5 8 3 4 7 1 2 6
+```
+
+También puedes utilizar la función **`order`** con vectores de caracteres. Ten en cuenta que ordenar una variable categórica significa ordenarla alfabéticamente.
+
+## **La función sort en R**
+
+La función `sort` devuelve ordenado, en orden ascendente por defecto, el vector que pases como entrada.
+
+``` r
+sort(x,                   # Vector atómico
+      decreasing = FALSE, # Ordenar en orden creciente (FALSE) o decrecienete (TRUE)
+      na.last = TRUE,     # Poner valores NA al final (TRUE) o al principio (FALSE)
+      ...)                # Argumentos adicionales
+
+sort.int(x,                    # Vector atómico o factor
+         partial = NULL,       # Vector de índices de ordenación parcial
+         decreasing = FALSE,   # Igual que en sort
+         na.last = TRUE,       # Igual que en sort
+         method = c("auto", "shell", "quick", "radix"), # Método usado. Por defecto 'auto'
+         index.return = FALSE, # Delvolver el vector de índices (TRUE) o no (FALSE)
+         ...)                  # Argumentos adicionales
+```
+
+Recuerda ejecutar `?sort` o `help(sort)` para obtener ayuda adicional.
+
+## **Diferencia entre las funciones sort y order en R**
+
+Es habitual confundirse entre las funciones `sort` y `order` en R. Por un lado, considera el siguiente vector y usa la función `order` con el:
+
+``` r
+vector <- c(1, 5.2, 22, 9, -5, 2)  
+ii <- order(vector) 
+ii
+```
+
+```         
+Output
+5 1 6 2 4 3
+```
+
+Si indexas el vector con la salida de la función `order`, obtendrás el vector inicial ordenado en orden ascendente:
+
+``` r
+vector[ii]
+```
+
+```         
+Output-5.0  1.0  2.0  5.2  9.0 22.0
+```
+
+Por otro lado, la función `sort` devolverá por defecto el vector ordenado en orden ascendente. Sin embargo, también puedes obtener el mismo resultado que el que tiene la función `order` si estableces el argumento `index.return` como `TRUE`.
+
+``` r
+sort(vector, index.return = TRUE)
+```
+
+```         
+$`x`
+[1] -5.0  1.0  2.0  5.2  9.0 22.0
+
+$ix
+[1] 5 1 6 2 4 3
+```
+
+## **Ordenar vector en R**
+
+Hay tres formas diferentes de ordenar un vector: **en orden ascendente, en orden descendente o en función del índice de otro vector** de la misma longitud. Para esta sección, vamos a utilizar el siguiente vector de muestra:
+
+``` r
+x <- c(56, 14, 1, 28)
+```
+
+Ten en cuenta que cuando trabajes con un vector grande, puedes usar la función `is.unsorted` para verificar si el vector está ordenado o no, en lugar de verificar visualmente el orden.
+
+``` r
+is.unsorted(x) # TRUE
+```
+
+### **Orden ascendente**
+
+**Ordenar de forma ascendente** significa que los valores se ordenarán de **menor a mayor.** Para ello, puedes utilizar las funciones `order` y `sort` de la siguiente manera:
+
+``` r
+x[order(x)]
+
+# Equivalente a:
+ii <- order(x)
+x[ii]
+
+# Equivalente a:
+sort(x)
+```
+
+```         
+Output
+1 14 28 56
+```
+
+### **Orden descendente**
+
+Ordenar un vector de forma descendente significa ordenar los elementos de **mayor a menor**. Para ese propósito, puedes ordenar el opuesto del vector (con el signo menos) o establecer el argumento `decreasing = TRUE` de la siguiente manera:
+
+``` r
+x[order(-x)]
+
+# Equivalente a:
+x[order(x, decreasing = TRUE)]
+
+# Equivalente a:
+sort(x, decreasing = TRUE)
+```
+
+```         
+Output
+56 28 14 1
+```
+
+### **Ordenar por otro vector**
+
+Puedes **ordenar un vector utilizando otro de la misma longitud como índice**. En el siguiente ejemplo, el vector `y` indica que el segundo elemento del vector `x` (14) debe ser el primero, el tercero (1) el segundo, el primero (56) el tercero y finalmente el cuarto (28).
+
+``` r
+y <- c(2, 3, 1, 4) x[y]
+```
+
+```         
+Output
+14 1 56 28
+```
+
+También podrías usar el índice de ordenación del vector `y` para ordenar el vector `x`.
+
+``` r
+# order(y) # 3 1 2 4
+x[order(y)]
+```
+
+```         
+Output
+1 56 14 28
+```
+
+## **Ordenar un data frame o una matriz en R**
+
+Cuando trabajes con una matriz o un data frame en R, puedes ordenar los datos por filas o por columnas. Ten en cuenta que esta explicación también sirve para ordenar matrices. Para explicar **cómo ordenar un data frame**, vamos a utilizar el conjunto de datos `attitude` de R base.
+
+``` r
+mi_df <- attitude[, c(2, 3, 4)]
+head(mi_df)
+```
+
+```         
+Output
+     complaints  privileges  learning
+1         51          30        39
+2         64          51        54
+3         70          68        69
+4         63          45        47
+5         78          56        66
+6         55          49        44
+```
+
+### **Ordenar data frame por columna**
+
+Supón que quieres ordenar el data frame por la columna `privileges` en orden ascendente. Para ese propósito puedes escribir:
+
+``` r
+# Ordenando por la columna 'privileges'
+df_ordenado <- mi_df[order(mi_df$privileges), ]
+
+# Primeras filas
+head(df_ordenado)
+```
+
+```         
+Output
+      complaints  privileges  learning
+1          51         30        39
+21         40         33        34
+30         82         39        59
+7          67         42        56
+24         37         42        58
+25         54         42        48
+```
+
+Nótese que en caso de empate, el orden se basa en el índice de las filas.
+
+En caso de que necesites **ordenar tu data frame por varias columnas**, especifica más columnas dentro de la función `order`. Esto es muy útil cuando la columna principal que estás ordenando tiene empates.
+
+``` r
+# Ordenando por la columna 'privileges' y luego por la columna 'complaints' en caso de empate
+df_ordenado <- mi_df[order(mi_df$privileges, mi_df$complaints), ]
+
+# Primeras filas
+head(df_ordenado)
+```
+
+```         
+Output
+   complaints privileges learning
+1          51         30       39
+21         40         33       34
+30         82         39       59
+24         37         42       58      # <- Nota la diferencia
+25         54         42       48      # respecto a la salida anterior
+7          67         42       56
+```
+
+Fíjate que la columna `complaints` ahora está ordenada para aquellos valores donde la columna `privileges` tiene valores repetidos.
+
+### **Cambiar el orden de las filas y columnas en R**
+
+Puedes cambiar el orden de las columnas en R cambiando el orden del índice que define las columnas. También puedes **invertir el orden** con una secuencia desde el número de columnas del data frame hasta 1.
+
+``` r
+# Order personalizado de las columnas
+mi_df[, c(2, 1, 3)] 
+
+# Orden inverso de las columnas
+mi_df[, ncol(mi_df):1]
+```
+
+De manera equivalente, puedes cambiar el orden de las filas:
+
+``` r
+# Orden personalizado de las filas (aleatorio)
+mi_df[sample(nrow(mi_df), replace = FALSE), ]
+
+# Orden inverso de las filas
+mi_df[nrow(mi_df):1, ]
+```
+
+#### **Ordenar filas por orden alfabético**
+
+Considera el siguiente data frame de muestra, donde a cada fila se le ha asignado como nombre una letra de manera aleatoria.
+
+``` r
+Filas con nombres aleatorios
+set.seed(4)
+mi_df <- data.frame(x = 1:10, y = 12:21)
+rownames(mi_df) <- sample(letters, nrow(mi_df))
+mi_df
+```
+
+```         
+Output
+   x  y
+p  1 12
+a  2 13
+h  3 14
+g  4 15
+r  5 16
+f  6 17
+o  7 18
+v  8 19
+s  9 20
+b 10 21
+```
+
+Puedes ordenar las filas alfabéticamente con las funciones `order` y `rownames` de la siguiente manera:
+
+``` r
+mi_df[order(rownames(mi_df)), ]
+```
+
+```         
+Output   x  y a  2 13 b 10 21 f  6 17 g  4 15 h  3 14 o  7 18 p  1 12 r  5 16 s  9 20 v  8 19
+```
+
+## **Ordenar una lista en R**
+
+En esta sección aprenderás **cómo ordenar una lista en R**. Hay tres formas de ordenar una lista en R: ordenar los elementos por orden alfabético, crear un orden personalizado u ordenar un elemento específico de la lista. Considera la siguiente lista de muestra:
+
+``` r
+lista <- list(b = 1:10, a = letters[1:5], c = matrix(1:2, ncol = 2))
+lista
+```
+
+```         
+Output
+$`b`
+ [1]  1  2  3  4  5  6  7  8  9 10
+
+$a
+[1] "a" "b" "c" "d" "e"
+
+$c
+     [,1] [,2]
+[1,]    1    2
+```
+
+Puedes ordenar elementos de la lista alfabéticamente utilizando las funciones `order` y `names` de la siguiente manera:
+
+``` r
+# Ordenar los elementos alfabéticamente
+lista[order(names(lista))]
+```
+
+```         
+Output
+$`a`
+[1] "a" "b" "c" "d" "e"
+
+$b
+ [1]  1  2  3  4  5  6  7  8  9 10
+
+$c
+     [,1] [,2]
+[1,]    1    2
+```
+
+Si lo prefieres, puedes crear manualmente un orden personalizado especificando los nombres o el índice de los elementos dentro de la función `c`.
+
+``` r
+# Orden personalizado
+lista[c("b", "c", "a")]
+lista[c(1, 3, 2)] # Equivalente
+```
+
+```         
+$`b`
+ [1]  1  2  3  4  5  6  7  8  9 10
+
+$c
+     [,1] [,2]
+[1,]    1    2
+
+$a
+[1] "a" "b" "c" "d" "e"
+```
+
+Finalmente, podría ser interesante ordenar un elemento de la lista en concreto. En el siguiente caso, la ordenación será lo mismo que ordenar un vector.
+
+``` r
+# Ordenar un elemento de la lista
+sort(lista$b, decreasing = TRUE)
+```
+
+## **Ordenar datos categóricos**
+
+Se puede ordenar vectores de caracteres o datos categóricos en R de diferentes maneras. Considera la siguiente variable categórica:
+
+``` r
+set.seed(1)
+datos_categoricos <- rownames(mtcars)[sample(10)]
+datos_categoricos
+```
+
+```         
+"Datsun 710" "Hornet 4 Drive" "Hornet Sportabout" "Duster 360" "Mazda RX4 Wag"
+"Merc 240D" "Merc 230" "Valiant" "Merc 280" "Mazda RX4"  
+```
+
+Para ordenar la variable en orden alfabético puedes hacer uso de la función `sort`, como revisamos en la sección sobre ordenación de vectores. Si la variable contiene números en forma de caracteres también se ordenarán correctamente.
+
+``` r
+sort(datos_categoricos)
+```
+
+Una alternativa para ordenar una variable categórica alfabéticamente en R es convertirla a factor y luego ordenarla.
+
+``` r
+sort(factor(datos_categoricos))
+```
+
+```         
+Output
+Datsun 710        Duster 360        Hornet 4 Drive    Hornet Sportabout
+Mazda RX4         Mazda RX4 Wag     Merc 230          Merc 240D        
+Merc 280          Valiant          
+Levels: Datsun 710 Duster 360 Hornet 4 Drive Hornet Sportabout ... Valiant
+```
+
+Sin embargo, si quieres devolver el índice de ordenación de los factores en R, deberás usar la función `sort.int` para usar el argumento `index.return`.
+
+``` r
+sort.int(factor(datos_categoricos), index.return = TRUE)
+```
+
+```         
+Output
+$`x`
+ [1] Datsun 710        Duster 360        Hornet 4 Drive    Hornet Sportabout
+ [5] Mazda RX4         Mazda RX4 Wag     Merc 230          Merc 240D        
+ [9] Merc 280          Valiant          
+10 Levels: Datsun 710 Duster 360 Hornet 4 Drive Hornet Sportabout ... Valiant
+
+$ix
+ [1]  1  4  2  3 10  5  7  6  9  8
+```
+
+# **Subset en R**
+
+Hacer un subset en R consiste en obtener una submuestra de los datos originales, con el fin de obtener elementos específicos basados ​​en alguna condición lógica.
+
+## **¿Cómo hacer un subset en R?**
+
+**Crear subconjuntos de datos en R se puede lograr de diferentes maneras**, dependiendo de los datos con los que estés trabajando. En general, puedes crear un subconjunto:
+
+1.  **Usando corchetes** (`[]` o `[[]]`).
+
+2.  Usando el **signo de dólar** (`$` ) si los elementos del objeto tienen nombres.
+
+3.  **Con funciones**, como el comando `subset`, para obtener subconjuntos basados en condiciones lógicas.
+
+### **Corchetes simples y dobles en R**
+
+Antes de las explicaciones para cada caso, cabe mencionar la **diferencia entre usar corchetes simples y dobles** a la hora de obtener un subconjunto de datos en R. Supongamos que tienes el siguiente vector numérico:
+
+``` r
+x <- c(uno = 1, dos = 2)
+```
+
+Como explicaremos con más detalle en la sección correspondiente, puedes acceder al primer elemento del vector usando corchetes simples o dobles y especificando el índice del elemento.
+
+La diferencia es que **los corchetes simples mantendrán la estructura original del input, mientras que los dobles la simplificarán tanto como sea posible**. Esto se puede ilustrar con el siguiente ejemplo:
+
+``` r
+# Corchetes simples 
+x[1]
+```
+
+```         
+Output
+uno       # <-- Conserva el nombre del elemento  1
+```
+
+``` r
+# Corchetes dobles 
+x[[1]]
+```
+
+```         
+Output
+1         # <-- Se simplifica el output
+```
+
+Otra característica interesante se produce cuando intentas **acceder a observaciones fuera de los límites** del vector. En este caso, **si usas corchetes simples**, obtendrás un `NA`, mientras que obtendrás **un error si usas corchetes dobles**.
+
+``` r
+# Corchetes simples x[6]
+```
+
+```         
+Output
+<NA> 
+  NA 
+```
+
+``` r
+# Corchetes dobles
+x[[6]]
+```
+
+``` r
+Output
+Error en x[[6]] : subíndice fuera de límites
+```
+
+Sin embargo, en algunas ocasiones no es posible usar corchetes dobles, como sucede con data frames y matrices en varios casos, tal y como se señalará en sus correspondientes secciones.
+
+Ten en cuenta que si el subconjunto no devuelve observaciones significa que estás tratando de crear un subconjunto bajo alguna condición que nunca se cumple.
+
+## **La función subset**
+
+La función `subset` permite obtener subconjuntos de datos en R en base a ciertas condiciones lógicas para objetos de tipo vector, matrices y data frames.
+
+``` r
+# Para vectores
+subset(x,             # Vector numérico
+       condition)     # Condición/es lógica/s
+
+# Para matrices y data frames
+subset(x,             # Vector numérico
+       condition,     # Condición/es lógica/s
+       select,        # Columnas seleccionadas
+       drop = FALSE)  # Si se debe mantener la estructura del objeto (predeterminado) o no
+```
+
+En las siguientes secciones se utilizará esta función y los operadores para la mayoría de los ejemplos. Cabe destacar que esta función permite hacer un subset en R con una o múltiples condiciones.
+
+## **Subset de un vector en R**
+
+Se puede **crear un subset en R de un vector** de varias formas:
+
+1.  Especificando entre corchetes los **índices** que quieres obtener. Si quieres más de uno, selecciónalos utilizando la función `c`.
+
+2.  Usando **índices booleanos** para indicar si se debe seleccionar un valor (`TRUE`) o no (`FALSE`).
+
+3.  Utilizando **operadores lógicos** con la función `subset`.
+
+4.  Si quieres seleccionar todos los valores, excepto uno o algunos, crea un subconjunto e indica el índice con signo negativo.
+
+A continuación se resumen las formas de crear subconjuntos de vectores en R con varios ejemplos.
+
+``` r
+mi_vector <- c(15, 21, 17, 25, 12, 51)
+```
+
+``` r
+# Devuelve todo el vector
+mi_vector[]
+
+# Tercer valor
+mi_vector[3]
+
+# Tercer valor, simplificando el output
+mi_vector[[3]]
+
+# Elementos del 1 al 3
+mi_vector[1:3]
+
+# Segundo y quinto componente
+mi_vector[c(2, 5)]
+
+# Segundo elemento, dos veces
+mi_vector[c(2, 2)]
+
+# Todos los valores excepto el cuarto
+mi_vector[-4]
+
+# Todos los valores excepto del cuarto y el quinto
+mi_vector[-c(4, 5)]
+mi_vector[c(-4, -5)] # Equivalente
+
+# Primer, tercer, cuarto y sexto elemento
+mi_vector[c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE)]
+
+# Componentes mayores que 15
+mi_vector[mi_vector > 15]
+
+# Con la función subset
+subset(mi_vector, mi_vector > 15)
+```
+
+**`mi_vector[]`** es útil cuando quieres asignar el mismo valor a todos los elementos de un vector ya creado. Por ejemplo, **`mi_vector[] <- 1`** reemplazará todos los valores del vector con 1, mientra que **`mi_vector <- 1`** sobreescribirá el vector como un único número.
+
+Además, si se nombran los elementos del vector, puedes usar las formas anteriores y las siguientes para hacer un subset, especificando el nombre de los elementos como caracter.
+
+``` r
+mi_vector_nombres <- setNames(mi_vector, letters[2:7])
+```
+
+``` r
+# Elemento "b"
+mi_vector_nombres["b"]
+
+# Elemento "b", simplificado
+mi_vector_nombres[["b"]]
+
+# Elementos "d" y "f"
+mi_vector_nombres[c("d", "f")]
+```
+
+Recuerda que los vectores pueden ser de cualquier tipo de dato.
+
+## **Subset de una lista en R**
+
+Considera la siguiente lista de ejemplo:
+
+``` r
+mi_lista <- list(1:10, c(TRUE, FALSE), 1)
+```
+
+Puedes crear un sibconjunto de los elementos de una lista con corchetes simples y dobles para crear subconjuntos de los elementos o sub elementos de la lista.
+
+``` r
+# Segundo objeto de la lista
+mi_lista[2]
+
+# Segundo objeto de la lista, simplificado
+mi_lista[[2]]
+
+# Primer elemento del segundo objeto simplificado
+mi_lista[[2]][1]
+
+# Primer elemento del segundo objeto. Ambos simplificados
+mi_lista[[2]][[1]]
+```
+
+En caso de que tengas una lista con nombres, puedes acceder a ellos especificando el nombre del elemento o accediendo a ellos con el signo del dólar.
+
+``` r
+mi_lista_nombres <- list(x = 1:10, y = c(TRUE, FALSE), z = 1)
+```
+
+``` r
+# Primer elemento
+mi_lista_nombres["x"]
+mi_lista_nombres$x # Equivalente
+
+# Segundo elemento, simplificado
+mi_lista_nombres[["y"]]
+```
+
+Por otra parte, también es posible obtener subconjuntos condicionales con elementos de listas. Por ejemplo, podrías sustituír el primer elemento de la lista por un subconjunto de la misma de la siguiente forma:
+
+``` r
+mi_lista[[1]] <- subset(mi_lista[[1]], mi_lista[[1]] > 5)
+mi_lista
+```
+
+```         
+Output
+[[1]]
+[1]  6  7  8  9 10
+
+[[2]]
+[1]  TRUE FALSE
+
+[[3]]
+[1] 1
+```
+
+## **Subset en R de un data frame**
+
+Hacer un subset con un data frame consiste en obtener algunas filas o columnas de todo el data frame o algunas que cumplan con una o varias condiciones. Es muy habitual hacer un subset en R con este tipo de estructura para posteriormente analizar los datos. Considera el siguiente data frame de muestra:
+
+``` r
+set.seed(24)
+mi_df <- data.frame(x = 1:10,
+                    y = 11:20,
+                    z = 3:12,
+                    w = sample(c("Grupo 1", "Grupo 2"), 10, replace = TRUE))
+head(mi_df)
+```
+
+```         
+Output
+x   y  z    w
+1  11  3  Grupo 1
+2  12  4  Grupo 1
+3  13  5  Grupo 2
+4  14  6  Grupo 2
+5  15  7  Grupo 2
+6  16  8  Grupo 2
+```
+
+### **Filtrar columnas**
+
+Puedes hacer un **subset por columnas en R** de diferentes maneras:
+
+1.  Si quieres solo una columna, puedes usar corchetes simples o dobles para especificar el índice o el nombre (entre comillas) de la columna.
+
+2.  Especificando los índices después de una coma (dejar el primer argumento en blanco selecciona todas las columnas del data frame). En este caso no podrías usar corchetes dobles, pero sí el argumento `drop`.
+
+3.  En caso de crear un subconjunto con múltiples columnas de un data frame, simplemente indica las columnas dentro de un vector.
+
+El siguiente bloque de código muestra varios ejemplos:
+
+``` r
+# Primera columna (simplificada como vector)
+mi_df[[1]]
+mi_df[, 1]   # Equivalente
+mi_df[["x"]] # Equivalente
+mi_df[, c(TRUE, FALSE, FALSE, FALSE)] # Equivalente
+
+# Primera columna (con nombre de la columna y de las filas)
+mi_df[1]
+mi_df[, 1, drop = FALSE] # Equivalente
+mi_df["x"]               # Equivalente
+mi_df[c(TRUE, FALSE, FALSE, FALSE)] # Equivalente
+
+# Segunda y tercera columna
+mi_df[c(2, 3)]
+mi_df[, c(2, 3)]   # Equivalente
+mi_df[c("y", "z")] # Equivalente
+mi_df[c(FALSE, TRUE, TRUE, FALSE)] # Equivalente
+```
+
+Cuando se crea un subconjunto con más de una columna o al especificar filas y columnas (usando una coma), deberás establecer **`drop = FALSE`** para mantener la estructura original del objeto, en lugar de usar corchetes dobles.
+
+#### **Filtrar un data frame en función del nombre de las columnas**
+
+Un **subconjunto de columnas** de un data frame también se puede lograr con el signo de dólar (`$`), especificando el nombre de la columna con o sin comillas.
+
+``` r
+# Primera columna
+mi_df$x
+
+# Segunda columna
+mi_df$y
+mi_df$"y" # Equivalente
+```
+
+#### **Filtrar un data frame según el valor de las variables**
+
+También se puede crear un subconjunto de un data frame dependiendo de los valores de las columnas. Como ejemplo, es posible que quieras hacer un subconjunto con todos los valores del data frame donde el valor correspondiente de la columna `z` sea mayor que 5, o donde el grupo de la columna `w` sea el Grupo 1.
+
+``` r
+# Valores donde la columna z es mayor que 5
+mi_df[mi_df$z > 5, ]
+
+# Todos los valores correspondientes al Grupo 1
+mi_df[mi_df$w == "Grupo 1", ]
+```
+
+Ten en cuenta que para crear un subconjunto de un data frame por el valor de una columna, debes especificar la condición en el primer argumento, ya que la salida será un subconjunto de filas.
+
+Asimismo, puedes crear un **subconjunto basado en una condición** según los valores de las columnas con la función `subset`, tal y como se muestra a continuación. Ten en cuenta que al usar esta función puedes usar los nombres de las variables directamente.
+
+``` r
+# Todos los valores correspondientes al Grupo 1
+subset(mi_df, w == "Group 1")
+```
+
+``` r
+Output
+  x   y   z    w
+  1  11   3  Grupo 1
+  2  12   4  Grupo 1
+  7  17   9  Grupo 1
+ 10  20  12  Grupo 1
+```
+
+``` r
+# Todos los valores donde 'y' es menor o igual a 14
+subset(mi_df, y <= 14)
+```
+
+```         
+Output
+ x   y  z     w
+ 1  11  3  Grupo 1
+ 2  12  4  Grupo 1
+ 3  13  5  Grupo 2
+ 4  14  6  Grupo 2
+```
+
+Al usar la función `subset` con un data frame puedes **especificar las columnas que quieres que se devuelvan**, indicándolas en el argumento `select`.
+
+``` r
+# Seleccionando las columnas que queremos devolver
+subset(mi_df, x > 3, select = c(x, w))
+```
+
+```         
+Output
+  x    w
+  4  Grupo 2
+  5  Grupo 2
+  6  Grupo 2
+  7  Grupo 1
+  8  Grupo 2
+  9  Grupo 2
+ 10  Grupo 1
+```
+
+Además, puedes usar **múltiples condiciones a la vez** para crear un subconjunto. Crear un subcojunto basado en múltiples condiciones es tan fácil como crear un subconjunto con una sola condición. En el siguiente ejemplo seleccionamos los valores de la columna `x` donde el valor es 1 o donde es igual a 6.
+
+```         
+mi_df[mi_df$x == 1 | mi_df$x == 6, ]
+```
+
+```         
+x   y  z
+1  11  3
+6  16  8
+```
+
+### **Subconjunto de filas en R**
+
+De manera análoga a crear subconjuntos de columnas, puedes hacer un subset de filas de un data frame indicando los índices de las filas que quieres como primer argumento dentro de los corchetes.
+
+```         
+# Primera fila
+mi_df[1, ]
+
+# Cuarta y sexta fila
+mi_df[c(4, 6), ]
+```
+
+#### **Subconjunto de filas en base a un vector**
+
+Para crear un subconjunto de filas de un data frame en función de un vector puedes usar el operador `%in%` o la función `is.element` de la siguiente manera:
+
+```         
+valores <- c(12, 14)
+
+mi_df[mi_df$y %in% valores, ]
+mi_df[is.element(mi_df$y, valores), ] # Equivalente
+```
+
+```         
+x   y  z    w
+ 2  12  4  Grupo 1
+ 4  14  6  Grupo 2
+```
+
+Puedes hacer el opuesto de **`%in%`** creando un nuevo operador con **`'%ni%' <- Negate('%in%')`** o escribiendo **`mi_df[!(mi_df$y %in% valores), ]`**.
+
+#### **Subconjunto en base a fechas**
+
+En determinadas ocasiones los data frames tienen una columna de fechas. En este caso, cada fila representa una fecha y cada columna un evento registrado en esas fechas. Para este propósito, necesitas transformar esa columna de fechas con la función `as.Date` para convertir la columna en formato fecha.
+
+``` r
+fechas <- seq(as.Date("2011/1/1"), by = "day", length.out = 10)
+
+mi_df_fechas <- cbind(fechas, mi_df)
+head(mi_df_fechas)
+```
+
+```         
+Output
+  fechas    x   y  z     w
+2011-01-01  1  11  3  Grupo 1
+2011-01-02  2  12  4  Grupo 1
+2011-01-03  3  13  5  Grupo 2
+2011-01-04  4  14  6  Grupo 2
+2011-01-05  5  15  7  Grupo 2
+2011-01-06  6  16  8  Grupo 2
+```
+
+Como ejemplo, puedes crear un subconjunto de los valores correspondientes a fechas superiores al 5 de enero de 2011 con el siguiente código:
+
+``` r
+subset(mi_df_fechas, dates > as.Date("2011-01-5"))
+```
+
+```         
+Output
+  fechas     x   y   z    w
+2011-01-06   6  16   8  Grupo 2
+2011-01-07   7  17   9  Grupo 1
+2011-01-08   8  18  10  Grupo 2
+2011-01-09   9  19  11  Grupo 2
+2011-01-10  10  20  12  Grupo 1
+```
+
+#### **Subconjunto de fecha única**
+
+En caso de que tu columna de fechas contenga la misma fecha varias veces y desees seleccionar todas las filas que contienen esa fecha, puedes usar el operador lógico `==` junto con la función `subset` de la siguiente manera:
+
+``` r
+subset(mi_df_fechas, dates == as.Date("2011-01-02"))
+```
+
+## **Subconjuntos de matrices en R**
+
+Obtener subconjuntos de una matriz en R es muy similar al proceso con data frames. Considera la siguiente matriz de ejemplo:
+
+``` r
+set.seed(45)
+
+mi_matriz <- matrix(sample(1:9), ncol = 3)
+colnames(mi_matriz) <- c("uno", "dos", "tres")
+mi_matriz
+```
+
+``` r
+  uno  dos tres
+[1, ]   6    8    1
+[2, ]   3    7    4
+[3, ]   2    5    9
+```
+
+Puedes seleccionar las filas y columnas especificando los índices de filas y luego de las columnas. También puedes usar el tipo de datos booleano para determinar si se debe seleccionar una determinada fila o columna o no.
+
+``` r
+# Filtrando con índices de filas y columnas
+mi_matriz[c(1, 3), c(1, 2)]
+
+# Filtrando con valores lógicos
+mi_matriz[c(TRUE, FALSE, TRUE), c(TRUE, TRUE, FALSE)] # Equivalente
+
+# Si lo prefieres, puedes mezclar
+mi_matriz[c(1, 3), c(TRUE, TRUE, FALSE)] # Equivalente
+```
+
+```         
+ uno dos
+[1, ]  6   8
+[2, ]  2   5
+```
+
+Cabe destacar que si te quedas con una sola fila o columna, el resultado será de tipo vector. Para preservar la clase original de la matriz, puedes establecer el argumento `drop` como `FALSE`.
+
+``` r
+mi_matriz[, 2] # 8 7 5
+```
+
+```         
+Output
+ 8 7 5
+```
+
+``` r
+mi_matriz[, 2, drop = FALSE]
+```
+
+```         
+Output
+      dos
+[1, ]  8
+[2, ]  7
+[3, ]  5
+```
+
+### **Filtrar matriz por nombres de filas y columnas**
+
+En caso de que tu matriz tenga nombres de fila o columna, puedes usarlos en lugar del índice para hacer un subset de la matriz. En el siguiente ejemplo, seleccionamos las columnas llamadas 'dos' y 'tres'.
+
+``` r
+mi_matriz[, c("dos", "tres")]
+```
+
+```         
+Output
+       dos   tres
+[1, ]   8     1
+[2, ]   7     4
+[3, ]   5     9
+```
+
+### **Subconjuntos de matrices según valores**
+
+De manera equivalente a los data frames, puedes crear subsets de una matriz según los valores de las columnas. En el siguiente ejemplo estamos creando un subconjunto basado en una condición sobre los valores de la tercera columna.
+
+``` r
+mi_matriz[mi_matriz[, 3] > 2, ]
+```
+
+```         
+Output
+     uno  dos  tres
+[1,]  3    7    4
+[2,]  2    5    9
+```
+
+## **Subconjunto de series temporales**
+
+Las series de tiempo o series temporales son un tipo de objeto con el que se pueden crear subconjuntos de datos basados en fechas. Para mostrar un ejemplo usaremos la serie temporal `nottem`.
+
+``` r
+nottem
+
+class(nottem) # ts
+```
+
+La función `window` es la que nos permite crear subconjuntos de series temporales, como se muestra en el siguiente ejemplo:
+
+``` r
+# Datos a partir de 1930 (incluido)
+window(nottem, start = c(1930))
+
+# Datos a partir de abril de 1930 (incluido)
+window(nottem, start = c(1930, 4))
+```
+
+# **Categorizar variables en R**
+
+La función cut permite cortar datos en grupos y especificar 'etiquetas de corte', por lo que es muy útil para crear un factor a partir de una variable continua.
+
+## **La función cut para categorizar variables**
+
+En ocasiones resulta útil **categorizar los valores de una variable continua** en diferentes niveles de un factor. Para ese propósito puedes usar la función `cut` de R. En el siguiente bloque de código mostramos la sintaxis de la función y la descripción simplificada de los argumentos.
+
+``` r
+cut(num_vector,              # Vector de entrada (numérico)
+    breaks,                  # Número o vector con los cortes
+    labels = NULL,           # Etiquetas para cada grupo
+    include.lowest = FALSE,  # Si se incluye el valor más pequeño o no en el primer intervalo
+    right = TRUE,            # Si el intervalo derecho está cerrado (y el izquierdo abierto) o viceversa
+    dig.lab = 3,             # Número de dígitos de los grupos si labels = NULL
+    ordered_result = FALSE,  # Si se debería ordenar el resultado (TRUE) del factor o no (FALSE)
+    …)   
+```
+
+Para más información sobre la función base para categorizar variables en R escribe `help(cut)` o `?cut` en la consola de R o RStudio.
+
+### **El argumento 'breaks'**
+
+El argumento `breaks` permite cortar los datos en subgrupos y, por lo tanto, clasificarlos. Considera el siguiente vector:
+
+``` r
+x <- -5:5
+```
+
+Por un lado, puedes establecer el argumento `breaks` como un número entero, creando tantos intervalos (niveles) como los especificados. Estos intervalos serán todos de la misma longitud.
+
+``` r
+cut(x, breaks = 2)
+```
+
+```         
+Output
+(-5.01,0] (-5.01,0] (-5.01,0] (-5.01,0] (-5.01,0]
+(-5.01,0] (0,5.01] (0,5.01]  (0,5.01]  (0,5.01]  (0,5.01] 
+Levels: (-5.01,0] (0,5.01]
+```
+
+Por otro lado, también puedes especificar los intervalos que prefieras.
+
+``` r
+cut(x, breaks = c(-6, 2, 5))
+```
+
+```         
+Output
+(-6,2] (-6,2] (-6,2] (-6,2] (-6,2] (-6,2] (-6,2] (-6,2] (2,5]  (2,5] 
+(2,5] 
+Levels: (-6,2] (2,5]
+```
+
+Cabe destacar que si los intervalos tienen decimales, puedes modificar el número de decimales con el argumento `dig.lab` y decidir si ordenar o no los resultados con el argumento `ordered_result`.
+
+### **El argumento labels**
+
+También puedes cambiar los niveles del factor con el argumento `labels`.
+
+``` r
+x <- c(12, 1, 25, 12, 65, 2, 6, 17)
+
+cut(x, breaks = c(0, 3, 12, 15, 20, 80),
+    labels = c("Primero", "Segundo", "Tercero", "Cuarto", "Quinto"))
+
+# Equivalente a
+c <- cut(x, breaks = c(0, 3, 12, 15, 20, 80))
+levels(c) <- c("Primero", "Segundo", "Tercero", "Cuarto", "Quinto")
+```
+
+```         
+Output
+Segundo  Primero  Quinto  Segundo Quinto  Primero  Segundo  Cuarto 
+Levels: Primero Segundo Tercero Cuarto Quinto
+```
+
+### **Incluír el valor más pequeño**
+
+El argumento `include.lowest` especifica si el lado izquierdo del primer intervalo es abierto o cerrado. Por defecto se establece en `FALSE` (abierto).
+
+``` r
+x <- 15:25
+
+cut(x, breaks = c(15, 20, 25), include.lowest = FALSE)
+```
+
+```         
+Output
+<NA> (15,20] (15,20] (15,20] (15,20]
+(15,20] (20,25] (20,25] (20,25] (20,25] (20,25]
+Levels: (15,20] (20,25]
+```
+
+En este caso, el valor más bajo (15), no se incluye en el intervalo (el intervalo izquierdo está abierto), por lo que el valor se clasifica como `NA`, porque el número 15 no pertenece a ninguno de los intervalos. Sin embargo, si estableces `include.lowest` como `TRUE` se incluirá el valor, ya que se cerrará el lado izquierdo del primer intervalo.
+
+```         
+cut(x, breaks = c(15, 20, 25), include.lowest = TRUE)
+```
+
+``` r
+Output
+[15,20] [15,20] [15,20] [15,20] [15,20] 
+[15,20] (20,25] (20,25] (20,25] (20,25] (20,25]
+Levels: [15,20] (20,25]
+```
+
+### **EL argumento right**
+
+Considera el caso en el que que quieres clasificar algunos datos (�x) en las siguientes categorías:
+
+-   Bajo, si x ∈ [0, 150).
+
+-   Medio, si x ∈ [150, 200).
+
+-   Alto, si x ∈ [200, ∞).
+
+Por defecto, el argumento `right` está establecido como `TRUE`, por lo que los intervalos están abiertos a la izquierda y cerrados a la derecha (x, y].
+
+``` r
+x <- c(75, 150, 160, 151, 216, 149)
+
+categorias <- cut(x, breaks = c(0, 150, 200, Inf),labels = c("bajo", "medio", "alto"))           
+
+data.frame(x, categorias)
+```
+
+En este escenario, no todos los valores se clasifican bien.
+
+```         
+Output
+  x   categorias
+  75       bajo
+ 150       bajo   # <-- Categorizado como bajo
+ 160      medio
+ 151      medio 
+ 216       alto
+ 149       bajo
+```
+
+Sin embargo, si estableces `right = FALSE`, los intervalos se cerrarán a la izquierda y se abrirán a la derecha.
+
+``` r
+categories <- cut(x, breaks = c(0, 150, 200, Inf),
+                  labels = c("bajo", "medio", "alto"),
+                  right = FALSE)
+
+data.frame(x, categories)
+```
+
+Ahora los datos estarán categorizados correctamente:
+
+```         
+Output
+  x   categorias
+  75       bajo
+ 150       bajo   # <-- Categorizado como bajo
+ 160      medio
+ 151      medio 
+ 216       alto
+ 149       bajo
+```
+
+Cambiar los argumentos **`right`** e **`include.lowest`** puede provocar errores, por lo que recomendamos cambiar los valores del argumento **`breaks`** en lugar de los demás.
+
+## **Ejemplo: ¿Cómo categorizar grupos de edad en R?**
+
+Considera que deseas clasificar un vector numérico de edades en las siguientes categorías:
+
+-   0-14: Niño.
+
+-   15-24: Joven.
+
+-   25-64: Adulto.
+
+-   65 y más: Mayor.
+
+``` r
+edad <- c(0, 12, 89, 14, 25, 2, 65, 1, 16, 24, 67, 61, 64)
+```
+
+A primera vista, podrías pensar en poner lo siguiente, pero así surgirá un error.
+
+``` r
+cut(edad, breaks = c(14, 24, 64, Inf),
+    labels = c("Niño", "Joven", "Adulto", "Mayor"))
+```
+
+Error in cut.default(edad, breaks = c(14, 24, 64, Inf), labels = c("Niño",: lengths of 'breaks' and 'labels' differ
+
+No obstante, al especificar 4 valores de corte y 4 etiquetas, teniendo en cuenta que los cortes definen intervalos, los intervalos que generas son tres (14-24, 24-64 y 64-Inf). En consecuencia, deberás agregar en este caso el valor más bajo para tener cuatro intervalos en lugar de tres:
+
+``` r
+cut(edad, breaks = c(0, 14, 24, 64, Inf),
+    labels = c("Niño", "Joven", "Adulto", "Mayor"))
+```
+
+```         
+Output
+NA  Niño  Mayor  Niño  Adulto  Niño  Mayor  Niño  Joven  Joven 
+Mayor  Adulto  Adulto
+Levels: Niño Joven Adulto Mayor
+```
+
+Sin embargo, la edad más baja (0) se clasificará como `NA`, ya que el mínimo de los intervalos no se incluye por defecto. Puedes resolver esto cambiando el 0 de los cortes (por ejemplo, poniendo -0.01 en lugar de 0) o estableciendo el argumento `include.lowest` como `TRUE`.
+
+``` r
+cut(edad, breaks = c(-0.01, 14, 24, 64, Inf),
+    labels = c("Niño", "Joven", "Adulto", "Mayor"))
+
+# Equivalente a:
+cut(edad, breaks = c(0, 14, 24, 64, Inf),
+    labels = c("Niño", "Joven", "Adulto", "Mayor"),
+    include.lowest = TRUE)
+```
+
+```         
+Output
+Niño  Niño  Mayor  Niño  Adulto  Niño  Mayor  Niño  Joven  Joven 
+Mayor  Adulto  Adulto
+Levels: Niño Joven Adulto Mayor
+```
+
+## **Ejemplo: ¿Cómo categorizar notas de exámenes en R?**
+
+Como otro ejemplo, las notas de exámenes son variables continuas que se pueden clasificar como suspensas, si la nota es inferior a 5 puntos sobre 10 o aprobadas en el otro caso. Generaremos un conjunto de datos muy sencillo para clasificar las calificaciones de los exámenes.
+
+``` r
+notas <- c(6.1, 5.3, 8.9, 5.0, 8.8, 1.9, 6.6, 7.2, 9.4, 4.9,
+           7.1, 3.9, 1.0, 9.3, 9.9, 5.9, 5.1, 8.4, 3.2, 10.0)
+```
+
+En este ejemplo podrías implementar la función como sigue:
+
+``` r
+notas_categorizadas <- cut(notas, breaks = c(0, 4.9, 10),
+                           labels = c("suspenso", "aprobado"))
+
+# Equivalente a:
+# notas_categorizadas <- cut(numeric, breaks = c(0, 5, 10.1),
+#                            labels = c("suspenso", "aprobado"), right = FALSE)
+
+# También puedes especificar los niveles de los factores con la función levels
+# levels(notas_categorizadas) <- c("suspenso", "aprobado")
+
+# Generamos un data frame
+notas_finales <- data.frame(notas, notas_categorizadas)
+head(notas_finales)
+```
+
+Ten en cuenta que en el método alternativo equivalente establecemos `right = FALSE`, porque si fuese `TRUE` un 5 sería un suspenso en lugar de un aprobado. Sin embargo, al establecer este argumento como `FALSE`, el lado derecho del intervalo estará abierto, por lo que un 10 no entraría en ningún intervalo y esa es la razón por la que establecemos el tercer corte en 10.1 en lugar de 10. El resultado final es el siguiente:
+
+```         
+     notas      notas_categorizadas
+1     6.1             suspenso 
+2     5.3             suspenso 
+3     8.9             suspenso
+4     5.0             suspenso
+5     8.8             suspenso
+6     1.9             aprobado
+```
+
+# **Dividir datos en R**
+
+La función `split` permite **dividir datos en R** basándose ​​en niveles de factores.
+
+## **La función split en R**
+
+La función `split` divide los datos de entrada (`x`) en diferentes grupos (`f`). El siguiente bloque resume los argumentos de la función y su descripción.
+
+``` r
+split(x,                 # Vector o data frame
+      f,                 # Grupos de clase factor, vector o lista
+      drop = FALSE,      # Si eliminar los grupos no usados (TRUE) o no (FALSE)
+      sep = ".",         # Cadena de caracteres para separar los grupos cuando f es una lista
+      lex.order = FALSE, # Si la concatenación de factores debe ser ordenada léxicamente (TRUE) o no (FALSE)
+      ...)               # Argumentos adicionales
+```
+
+### **Dividir un vector en R**
+
+Supón que tienes un vector cuyos elementos tienen asignado un nombre y donde el nombre de cada elemento corresponde al grupo al que pertenece el elemento. Puedes dividir el vector en dos vectores donde los elementos pertenezcan al mismo grupo, pasando los nombres del vector con la función `names` al argumento `f`.
+
+``` r
+a <- c(x = 3, y = 5, x = 1, x = 4, y = 3)
+a
+```
+
+```         
+Output
+x y x x y
+3 5 1 4 3
+```
+
+``` r
+split(a, f = names(a))
+```
+
+```         
+Output
+$`x`
+x x x
+3 1 4
+
+$y
+y y
+5 3
+```
+
+También puedes pasar un vector de caracteres como parámetro del argumento `f` para indicar los grupos correspondientes de cada elemento, o directamente un objeto de tipo factor.
+
+``` r
+grupos <- c("Grupo 1", "Grupo 1", "Grupo 2", "Grupo 1", "Grupo 2")
+
+split(a, f = grupos)
+split(a, f = factor(grupos)) # Equivalent
+```
+
+```         
+Output
+$`Grupo 1`
+x y x
+3 5 4
+
+$`Grupo 2`
+x y
+1 3 
+```
+
+Además, puedes dividir tus datos en múltiples grupos, generando interacciones entre ellos. Para tal propósito la entrada del argumento `f` debe ser una lista.
+
+``` r
+grupos_2 <- c("Tipo 1", "Tipo 1", "Tipo 1", "Tipo 2", "Tipo 1")
+
+split(a, f = list(grupos, grupos_2))
+
+
+# Equivalent
+f1 <- factor(c("Grupo 1", "Grupo 1", "Grupo 2", "Grupo 1", "Grupo 2"),
+             levels = c("Grupo 1", "Grupo 2"))
+f2 <- factor(c("Tipo 1", "Tipo 1", "Tipo 1", "Tipo 2", "Tipo 1"),
+             levels = c("Tipo 1", "Tipo 2"))
+
+split(a, f = list(f1, f2))
+```
+
+```         
+Output
+$`Grupo 1.Tipo 1`
+x y
+3 5
+
+$`Grupo 2.Tipo 1`
+x y
+1 3
+
+$`Grupo 1.Tipo 2`
+x
+4
+
+$`Grupo 2.Tipo 2`
+named numeric(0)
+```
+
+Nótese que, por defecto, **las interacciones entre grupos se separan con un punto** y que **la salida contiene todos los grupos posibles, incluso cuando no hay observaciones** en algunos de ellos. Sin embargo, puedes personalizar esto con los argumentos `sep` y `drop`, respectivamente.
+
+``` r
+vec_split <- split(a, f = list(f1, f2), drop = TRUE, sep = ": ")
+vec_split
+```
+
+``` r
+Output
+$`Grupo 1: Tipo 1`
+x y
+3 5
+
+$`Grupo 2: Tipo 1`
+x y
+1 3
+
+$`Grupo 1: Tipo 2`
+x
+4
+```
+
+Cabe mencionar que con la función `unsplit` puedes recuperar el vector original, pero los nombres de los elementos se perderán.
+
+``` r
+unsplit(vec_split, list(f1, f2))
+```
+
+```         
+Output
+<NA> <NA> <NA> <NA> <NA>
+ 3    5    1    4    3 
+```
+
+### **Dividir un data frame en R**
+
+Puedes dividir un conjunto de datos en subconjuntos en función de una o más variables que representan grupos de datos. Considera el siguiente data frame:
+
+``` r
+set.seed(3)
+
+df <- CO2[sample(1:nrow(CO2), 10), ]
+head(df)
+```
+
+```         
+Output
+   Plant        Type  Treatment conc uptake
+15   Qn3      Quebec nonchilled   95   16.2
+68   Mc1 Mississippi    chilled  500   19.5
+32   Qc2      Quebec    chilled  350   38.8
+27   Qc1      Quebec    chilled  675   35.4
+49   Mn1 Mississippi nonchilled 1000   35.5
+48   Mn1 Mississippi nonchilled  675   32.4
+```
+
+Puedes usar la función `split` para dividir el data frame en grupos basados, por ejemplo, en la variable `Treatment`.
+
+``` r
+split(df, f = df$Treatment)
+```
+
+```         
+$`nonchilled`
+   Plant        Type  Treatment conc uptake
+15   Qn3      Quebec nonchilled   95   16.2
+49   Mn1 Mississippi nonchilled 1000   35.5
+48   Mn1 Mississippi nonchilled  675   32.4
+10   Qn2      Quebec nonchilled  250   37.1
+44   Mn1 Mississippi nonchilled  175   19.2
+
+$chilled
+   Plant        Type Treatment conc uptake
+68   Mc1 Mississippi   chilled  500   19.5
+32   Qc2      Quebec   chilled  350   38.8
+27   Qc1      Quebec   chilled  675   35.4
+23   Qc1      Quebec   chilled  175   24.1
+79   Mc3 Mississippi   chilled  175   18.0
+```
+
+Como explicamos en la sección de vectores, puedes dividir un data frame en **subconjuntos que cumplan diferentes combinaciones de grupos al mismo tiempo**. Por ejemplo, puedes crear la división del data frame de muestra con las columnas `Type` y `Treatment`. Esto creará cuatro subconjuntos con todas las combinaciones posibles de los grupos. Ten en cuenta que el número total de divisiones es la multiplicación del número de niveles de cada grupo.
+
+``` r
+dfs <- split(df, f = list(df$Type, df$Treatment))
+dfs
+```
+
+``` {.r .R}
+Output
+$`Quebec.nonchilled`
+   Plant   Type  Treatment conc uptake
+15   Qn3 Quebec nonchilled   95   16.2
+10   Qn2 Quebec nonchilled  250   37.1
+
+$Mississippi.nonchilled
+   Plant        Type  Treatment conc uptake
+49   Mn1 Mississippi nonchilled 1000   35.5
+48   Mn1 Mississippi nonchilled  675   32.4
+44   Mn1 Mississippi nonchilled  175   19.2
+
+$Quebec.chilled
+   Plant   Type Treatment conc uptake
+32   Qc2 Quebec   chilled  350   38.8
+27   Qc1 Quebec   chilled  675   35.4
+23   Qc1 Quebec   chilled  175   24.1
+
+$Mississippi.chilled
+   Plant        Type Treatment conc uptake
+68   Mc1 Mississippi   chilled  500   19.5
+79   Mc3 Mississippi   chilled  175   18.0
+```
+
+Recuerda que **puedes recuperar el data frame original** con la función `unsplit`, pasando el data frame dividido y el grupo o grupos que utilizaste para crear la división.
+
+``` r
+unsplit(dfs, f = list(df$Type, df$Treatment))
+```
+
+# **Función merge en R**
+
+La función merge en R **permite fusionar o unir dos data frames por columnas comunes o por nombres de fila**. Esta función permite realizar diferentes combinaciones de bases de datos (SQL), como unión izquierda (left join), unión interna (inner join), unión derecha (right join) o unión completa (full join), entre otras.
+
+## **Sintaxis de la función merge en R**
+
+La sintaxis de la función `merge` en R con una breve descripción de sus argumentos se muestra en el siguiente bloque de código:
+
+``` r
+merge(x, y, ...)
+
+# Para data frames:
+merge(x, y, # Data frames u objectos a ser transformados
+      by = intersect(names(x), names(y)), # Columnas usadas para unir
+      by.x = by, by.y = by, # Columnas usadas para unir
+      all = FALSE, # Si TRUE, all.x = TRUE y all.y = TRUE
+      all.x = all, all.y = all, # Si TRUE, añade filas para cada fija en x (y) que no coincide con una en y (x).
+      sort = TRUE, # Ordenar (TRUE) las columnas por las columans usadas en el argumento 'by' 
+      suffixes = c(".x",".y"), # Sufijos para crear nombres de columna únicos
+      no.dups = TRUE, # Evitar nombres de columnas duplicados (TRUE) añadiendo más sufijos
+      incomparables = NULL, # Como tratar los valores que no se pueden unir
+      ...) # Argumentos adicionales
+```
+
+Ten en cuenta que el método principal de la función `merge` es para data frames. Sin embargo, `merge` es una función genérica que también se puede usar con otros objetos (como vectores o matrices), pero serán transformados a la clase `data.frame`.
+
+## **Unir data frames en R**
+
+Para crear un ejemplo reproducible que muestre cómo unir dos data frames en R, vamos a utilizar los siguientes conjuntos de datos de muestra denominados `df_1`, que representan el id de identificación, el nombre y el salario mensual de algunos empleados de una empresa y `df_2`, que muestra la identificación, nombre, edad y cargo de algunos empleados.
+
+``` r
+set.seed(61)
+
+empleado_id <- 1:10
+empleado_nombre <- c("Andrew", "Susan", "John", "Joe", "Jack",
+                     "Jacob", "Mary", "Kate", "Jacqueline", "Ivy")
+empleado_salario <- round(rnorm(10, mean = 1500, sd = 200))
+empleado_edad <- round(rnorm(10, mean = 50, sd = 8))
+empleado_puesto <- c("CTO", "CFO", "Administrativo", rep("Técnico", 7))
+
+
+df_1 <- data.frame(id = empleado_id[1:8], nombre = empleado_nombre[1:8],
+                   salario_mensual = empleado_salario[1:8])
+df_2 <- data.frame(id = empleado_id[-5], nombre = empleado_nombre[-5],
+                   edad = empleado_edad[-5], position = empleado_puesto[-5])
+
+df_1
+df_2
+```
+
+```         
+Output
+ # df_1                                  # df_2
+  id  nombre  salario_mensual             id      nombre   edad          puesto
+  1  Andrew       1424                     1       Andrew    40              CTO
+  2   Susan       1425                     2        Susan    38              CFO
+  3    John       1156                     3         John    54   Administrativo
+  4     Joe       1570                     4          Joe    66          Técnico
+  5    Jack       1223                     6        Jacob    38          Técnico
+  6   Jacob       1462                     7         Mary    53          Técnico
+  7    Mary       1641                     8         Kate    56          Técnico
+  8    Kate       1603                     9   Jacqueline    55          Técnico
+                                          10          Ivy    43          Técnico
+```
+
+Nótese que en un ejemplo real, todas las identificaciones serán únicas, pero los nombres pueden repetirse. También ten en cuenta que \'Jack\' falta en la segunda tabla (ni su edad ni su posición están disponibles) y \'Jacqueline\' y \'Ivy\' faltan en la primera (sus salarios mensuales no están disponibles con los datos actuales).
+
+### **Inner join**
+
+Un inner join (en realidad un natural join), es la **unión de conjuntos de datos más habitual** que se puede realizar. Consiste en fusionar dos data frames en uno que contenga los elementos comunes de ambos.
+
+Para fusionar o unir los dos conjuntos de datos de muestra, solo tienes que pasarlos a la función `merge`, sin la necesidad de cambiar otros argumentos, debido a que, de manera predeterminada, la función combina los conjuntos de datos por los nombres de las columnas comunes. En consecuencia, en este caso, la función fusiona los datos por dos columnas (`id` y `nombre`).
+
+``` r
+merge(x = df_1, y = df_2)
+merge(x = df_1, y = df_2, by = c("id", "nombre")) # Equivalente
+```
+
+```         
+Output
+ id   nombre  salario_mensual  edad          puesto
+  1  Andrew       1424          40              CTO
+  2   Susan       1425          38              CFO
+  3    John       1156          54   Administrativo
+  4     Joe       1570          66          Técnico
+  6   Jacob       1462          38          Técnico
+  7    Mary       1641          53          Técnico
+  8    Kate       1603          56          Técnico
+```
+
+Tal y como dijimos antes, \'Jack\', \'Ivy\' y \'Jacqueline\' no están en ambos conjuntos de datos. En consecuencia, sus datos no están presentes en la salida resultante de esta unión.
+
+### **Full (outer) join**
+
+El outer join, o unión completa, **combina todas las columnas de ambos conjuntos de datos en uno** para todos los elementos.
+
+Para crear el full outer join de dos data frames en R tienes que establecer el argumento `all` como `TRUE`:
+
+``` r
+merge(x = df_1, y = df_2, all = TRUE)
+```
+
+```         
+Output
+  id      nombre  salario_mensual  edad          puesto
+   1      Andrew      1424          40              CTO
+   2       Susan      1425          38              CFO
+   3        John      1156          54   Administrativo
+   4         Joe      1570          66          Técnico
+   5        Jack      1223          NA             <NA>    # <-- valores NA
+   6       Jacob      1462          38          Técnico
+   7        Mary      1641          53          Técnico
+   8        Kate      1603          56          Técnico
+   9  Jacqueline        NA          55          Técnico    # <-- valores NA
+  10         Ivy        NA          43          Técnico    # <-- valores NA
+```
+
+Como no todas las filas en el primer data frame coinciden con todas las filas en el segundo, en la salida aparecen valores `NA` en esos casos.
+
+### **Left (outer) join**
+
+El left join en R consiste en **unir todas las filas del primer data frame con los valores correspodientes del segundo**. Recuerda que \'Jack\' estaba en el primer conjunto de datos pero no en el segundo.
+
+Para crear la unión, tienes que establecer `all.x = TRUE` como sigue:
+
+``` r
+merge(x = df_1, y = df_2, all.x = TRUE)
+```
+
+```         
+  id  nombre  salario_mensual  edad          puesto
+   1  Andrew      1424          40              CTO
+   2   Susan      1425          38              CFO
+   3    John      1156          54   Administrativo
+   4     Joe      1570          66          Técnico
+   5    Jack      1223          NA             <NA>      # <-- Valores NA
+   6   Jacob      1462          38          Técnico
+   7    Mary      1641          53          Técnico
+   8    Kate       603          56          Técnico
+```
+
+Como el empleado que se corresponde al `id = 5` está en el primer data frame pero no en el segundo, los correspondientes valores faltantes se representan como `NA`.
+
+### **Right (outer) join**
+
+El right join en R es lo opuesto al left outer join. En este caso, la combinación consiste en **unir todas las filas del segundo data frame con las correspondientes en el primero**.
+
+En consecuencia, necesitarás establecer el argumento `all.y` como `TRUE` para unir los data frames de esta manera.
+
+``` r
+merge(x = df_1, y = df_2, all.y = TRUE)
+```
+
+```         
+    id      nombre  salario_mensual  edad          puesto
+   1      Andrew      1424          40              CTO
+   2       Susan      1425          38              CFO
+   3        John      1156          54   Administrativo
+   4         Joe      1570          66          Técnico
+   6       Jacob      1462          38          Técnico
+   7        Mary      1641          53          Técnico
+   8        Kate      1603          56          Técnico
+   9  Jacqueline        NA          55          Técnico     # <-- Nótese la diferencia
+  10         Ivy        NA          43          Técnico     # <-- respecto al left join
+```
+
+Como \'Jacqueline\' y \' Ivy\' están en el segundo conjunto de datos pero no en el primero, los valores correspondientes de salario mensual no están disponibles.
+
+### **Cross join**
+
+El cross join o unión cruzada, realiza el **producto cartesiano de los conjuntos de datos**, en este caso de `df_1` y `df_2`.
+
+Puedes crear un cross join en R estableciendo como `NULL` el argumento `by` de la función `merge`. Ten en cuenta que mostramos las primeras filas del output porque el resultado completo es muy grande.
+
+``` r
+Merged <- merge(x = df_1, y = df_2, by = NULL)
+head(Merged)
+```
+
+```         
+ id.x   nombre.x  salario_mensual   id.y   nombre.y  edad   puesto
+   1    Andrew         1424          1      Andrew     40      CTO
+   2     Susan         1425          1      Andrew     40      CTO
+   3      John         1156          1      Andrew     40      CTO
+   4       Joe         1570          1      Andrew     40      CTO
+   5      Jack         1223          1      Andrew     40      CTO
+   6     Jacob         1462          1      Andrew     40      CTO
+```
+
+## **Unir filas con la función merge en R**
+
+También puedes **unir data frames por los nombres de las filas**. Como ejemplo, considera los siguientes conjuntos de datos:
+
+``` r
+df1 <- data.frame(var = c("uno", "dos", "tres", "cuatro", "cinco"),
+                  datos = c(1, 5, 1, 6, 8))
+rownames(df1) <- c("A", "B", "C", "D", "E")
+df1
+
+df2 <- data.frame(var = c("tres", "uno", "ocho", "dos", "nueve"),
+                  datos = c(1, 5, 1, 6, 8))
+rownames(df2) <- c("E", "A", "B", "D", "C")
+df2
+```
+
+```         
+# df1                         # df2
+      var  datos                     var  datos
+A     uno    1                   E   tres    1
+B     dos    5                   A    uno    5
+C    tres    1                   B   ocho    1
+D  cuatro    6                   D    dos    6
+E   cinco    8                   C  nueve    8
+```
+
+En este caso, para unir los data frames según los nombres de las filas tienes que establecer el argumento `by` como `0` o como `"row.names"`.
+
+``` r
+merge(df1, df2, by = 0, all = TRUE) 
+merge(df1, df2, by = "row.names", all = TRUE) # Equivalente
+```
+
+```         
+ Row.names  var.x  datos.x  var.y  datos.y
+1      A      uno      1      uno     5
+2      B      dos      5     ocho     1
+3      C     tres      1    nueve     8
+4      D   cuatro      6      dos     6
+5      E    cinco      8     tres     1
+```
+
+Como puedes observar, la salida contiene tantas filas como nombres de fila distintos hay. Ten en cuenta que se ha aplicado outer join (ya que en este caso es equivalente a un left o right join), pero puedes unir los datos como quieras.
+
+## **Unir más de dos data frames en R**
+
+Por último, cabe mencionar que puedes **unir iterativamente data frames en R**, concatenando la función `merge`. Considera, por ejemplo, los siguientes conjutos de datos:
+
+``` r
+x <- data.frame(id = 1:4, año = 1995:1998)
+x
+
+y <- data.frame(id = c(4, 1, 3, 2),
+                año = c(1998, 1995, 1997, 1996),
+                edad = c(22, 25, 23, 24))
+y
+
+z <- data.frame(id = c(1, 2, 3),
+                año = 1995:1997,
+                salario = c(1000, 1200, 1599))
+z
+```
+
+```         
+# x          # y              # z
+ id   año     id  año edad     id  año  salario
+  1  1995      4  1998  22      1  1995   1000
+  2  1996      1  1995  25      2  1996   1200
+  3  1997      3  1997  23      3  1997   1599
+  4  1998      2  1996  24
+```
+
+Puede unir los tres data frames fusionando primero dos y uniendo la salida con el tercer conjunto de datos.
+
+``` r
+merge(x, merge(y, z))
+```
+
+```         
+id  año   edad salario
+1   1995   25   1000
+2   1996   24   1200
+3   1997   23   1599
+```
+
+Ten en cuenta que puedes especificar los argumentos que prefieras para cada combinación y que puedes concatenar tantos `merge` como necesites.
+
+``` r
+merge(x, merge(y, z, all = TRUE), all = TRUE)
+```
+
+```         
+id año  edad  salario
+1  1995   25   1000
+2  1996   24   1200
+3  1997   23   1599
+4  1998   22     NA
+```
+
+Una alternativa más limpia es usar la función `Reduce`, de manera que en lugar de concatenar las funciones `merge`, se pasan los data frames en una lista. Sin embargo, en este caso tendrás que establecer los mismos argumentos para todas las uniones.
+
+``` r
+Reduce(function(x, y) merge(x, y), list(x, y, z))
+```
+
+```         
+id  año   edad salario
+1   1995   25   1000
+2   1996   24   1200
+3   1997   23   1599
+```
