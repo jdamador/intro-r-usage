@@ -1569,7 +1569,7 @@ Output
                                           10          Ivy    43          Técnico
 ```
 
-Nótese que en un ejemplo real, todas las identificaciones serán únicas, pero los nombres pueden repetirse. También ten en cuenta que \'Jack\' falta en la segunda tabla (ni su edad ni su posición están disponibles) y \'Jacqueline\' y \'Ivy\' faltan en la primera (sus salarios mensuales no están disponibles con los datos actuales).
+Nótese que en un ejemplo real, todas las identificaciones serán únicas, pero los nombres pueden repetirse. También ten en cuenta que 'Jack' falta en la segunda tabla (ni su edad ni su posición están disponibles) y 'Jacqueline' y 'Ivy' faltan en la primera (sus salarios mensuales no están disponibles con los datos actuales).
 
 ### **Inner join**
 
@@ -1594,7 +1594,7 @@ Output
   8    Kate       1603          56          Técnico
 ```
 
-Tal y como dijimos antes, \'Jack\', \'Ivy\' y \'Jacqueline\' no están en ambos conjuntos de datos. En consecuencia, sus datos no están presentes en la salida resultante de esta unión.
+Tal y como dijimos antes, 'Jack', 'Ivy' y 'Jacqueline' no están en ambos conjuntos de datos. En consecuencia, sus datos no están presentes en la salida resultante de esta unión.
 
 ### **Full (outer) join**
 
@@ -1625,7 +1625,7 @@ Como no todas las filas en el primer data frame coinciden con todas las filas en
 
 ### **Left (outer) join**
 
-El left join en R consiste en **unir todas las filas del primer data frame con los valores correspodientes del segundo**. Recuerda que \'Jack\' estaba en el primer conjunto de datos pero no en el segundo.
+El left join en R consiste en **unir todas las filas del primer data frame con los valores correspodientes del segundo**. Recuerda que 'Jack' estaba en el primer conjunto de datos pero no en el segundo.
 
 Para crear la unión, tienes que establecer `all.x = TRUE` como sigue:
 
@@ -1670,7 +1670,7 @@ merge(x = df_1, y = df_2, all.y = TRUE)
   10         Ivy        NA          43          Técnico     # <-- respecto al left join
 ```
 
-Como \'Jacqueline\' y \' Ivy\' están en el segundo conjunto de datos pero no en el primero, los valores correspondientes de salario mensual no están disponibles.
+Como 'Jacqueline' y ' Ivy' están en el segundo conjunto de datos pero no en el primero, los valores correspondientes de salario mensual no están disponibles.
 
 ### **Cross join**
 
