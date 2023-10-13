@@ -27,7 +27,7 @@ data <- read.table(file = "mi_archivo.txt", header = TRUE)
 head(data)
 ```
 
-La salida de un archivo TXT leído con la función **`read.table`** será de la clase \"data.frame\".
+La salida de un archivo TXT leído con la función **`read.table`** será de la clase "data.frame".
 
 En caso de que tengas el archivo en otro directorio que no sea su directorio de trabajo, **deberás especificar la ruta completa** donde se encuentra el archivo de datos.
 
@@ -45,9 +45,9 @@ read.delim2(file = "mi_archivo.txt", header = TRUE, sep = "\t", dec = ",")
 
 | **Función** | **header** | **sep** | **dec** |
 |:-----------:|:----------:|:-------:|:-------:|
-| read.table  |   FALSE    |  \"\"   |  \".\"  |
-| read.delim  |    TRUE    | \"\\t\" |  \".\"  |
-| read.delim2 |    TRUE    | \"\\t\" |  \",\"  |
+| read.table  |   FALSE    |   ""    |   "."   |
+| read.delim  |    TRUE    |  "\\t"  |   "."   |
+| read.delim2 |    TRUE    |  "\\t"  |   ","   |
 
 ### **Saltar filas con el argumento skip**
 
@@ -124,8 +124,8 @@ La siguiente tabla resume los tres argumentos predeterminados principales:
 
 | **Función** | **Header** | **Sep** | **Dec** |
 |:-----------:|:----------:|:-------:|:-------:|
-|  read.csv   |    TRUE    |  \",\"  |  \".\"  |
-|  read.csv2  |    TRUE    |  \";\"  |  \",\"  |
+|  read.csv   |    TRUE    |   ","   |   "."   |
+|  read.csv2  |    TRUE    |   ";"   |   ","   |
 
 Para cargar un archivo CSV en R con los argumentos predeterminados puedes pasar el archivo como cadena de caracteres a la función correspondiente. La salida será de clase `data.frame`.
 
@@ -207,7 +207,7 @@ Ten en cuenta que las **dependencias externas pueden causar errores** al cargar 
 
 ### **Importar datos de Excel en RStudio desde el menú**
 
-Si estás usando RStudio puedes ir a File → Import Dataset → From Excel\.... Luego, selecciona tu archivo de Excel dándole a Browse\... y personaliza la salida (el nombre de la variable, la hoja, el rango de celdas, ...). También puedes ver una vista previa del código que se ejecutará de fondo y de los datos que se cargarán:
+Si estás usando RStudio puedes ir a File → Import Dataset → From Excel.... Luego, selecciona tu archivo de Excel dándole a Browse\... y personaliza la salida (el nombre de la variable, la hoja, el rango de celdas, ...). También puedes ver una vista previa del código que se ejecutará de fondo y de los datos que se cargarán:
 
 ![](img/import-dataset-excel-r.webp)
 
@@ -238,7 +238,7 @@ ruta_archivo <- readxl_example("clippy.xlsx")
 excel_sheets(ruta_archivo) # "list-column" "two-row-header"
 ```
 
-La función genérica del paquete para **leer archivos de Excel en R** es la función `read_excel`, que \'adivina\' el tipo de archivo (XLS o XLSX) según la extensión del archivo y el archivo en sí, en ese orden.
+La función genérica del paquete para **leer archivos de Excel en R** es la función `read_excel`, que 'adivina' el tipo de archivo (XLS o XLSX) según la extensión del archivo y el archivo en sí, en ese orden.
 
 ``` r
 read_excel(ruta_archivo)
@@ -338,7 +338,7 @@ Output
 3      Weight in grams       0.9
 ```
 
-Recuerda que la función `read_excel` \'adivina\' la extensión de archivo. No obstante, si conoces la extensión del archivo que vas a leer, puedes usar la función correspondiente de las siguientes para evitar ese proceso de \'adivinación\':
+Recuerda que la función `read_excel` 'adivina' la extensión de archivo. No obstante, si conoces la extensión del archivo que vas a leer, puedes usar la función correspondiente de las siguientes para evitar ese proceso de 'adivinación':
 
 ``` r
 # Si conoces la extensión del archivo
@@ -678,7 +678,7 @@ Primeras filas del XML generado
   </row>
 ```
 
-No obstante, es posible que hayas notado que el archivo XML de salida no contiene los nombres de las filas del data frame, ya que el lenguaje de marcado no admite nombrarlas. Para resolver este problema, en este ejemplo puedes vincular los nombres de fila al conjunto de datos y nombrar la nueva columna como \"car\".
+No obstante, es posible que hayas notado que el archivo XML de salida no contiene los nombres de las filas del data frame, ya que el lenguaje de marcado no admite nombrarlas. Para resolver este problema, en este ejemplo puedes vincular los nombres de fila al conjunto de datos y nombrar la nueva columna como "car".
 
 ``` r
 data <- cbind(rownames(mtcars), mtcars)
@@ -1368,7 +1368,7 @@ plot(df$x, df$y, pch = 16,
 
 ![](img/color-group.webp)
 
-Nótese que, por defecto, los niveles de los factores **están ordenados alfabéticamente**, por lo que en este caso el orden del vector de colores no es el orden de los colores en el gráfico, ya que la primera fila del data frame corresponde a \"coche\", que es el tercer nivel. Por lo tanto, **si cambias el orden de los niveles, puedes modificar el orden de los colores**.
+Nótese que, por defecto, los niveles de los factores **están ordenados alfabéticamente**, por lo que en este caso el orden del vector de colores no es el orden de los colores en el gráfico, ya que la primera fila del data frame corresponde a "coche", que es el tercer nivel. Por lo tanto, **si cambias el orden de los niveles, puedes modificar el orden de los colores**.
 
 Desde R 4.0.0 el argumento **`stringAsFactors`** de la función **`data.frame`** es **`FALSE`** por defecto, por lo que deberás convertir la variable categórica a factor si quieres colorear las observaciones por grupo como en el ejemplo anterior.
 
@@ -1440,7 +1440,7 @@ invisible(sapply(seq(4, 40, by = 6),
 
 ### **Tipo de línea**
 
-Al trazar un gráfico de tipo \"l\", \"o\", \"b\", \"s\", o al agregar una nueva línea sobre un gráfico ya creado, puedes elegir entre diferentes **tipos de línea en R**, estableciendo el argumento `lty` de 0 a 6.
+Al trazar un gráfico de tipo "l", "o", "b", "s", o al agregar una nueva línea sobre un gráfico ya creado, puedes elegir entre diferentes **tipos de línea en R**, estableciendo el argumento `lty` de 0 a 6.
 
 ``` r
 matplot(M, type = c("l"), lty = 1:6, col = "black", lwd = 3)
@@ -1566,14 +1566,14 @@ El argumento `bty` permite cambiar el tipo de caja de los gráficos de R. Hay 
 
 | **Tipo de caja** |      **Descripción**       |
 |:----------------:|:--------------------------:|
-|      \"o\"       | Caja entera (por defecto)  |
-|      \"7\"       |      Arriba y derecha      |
-|      \"L\"       |     Izquierda y abajo      |
-|      \"U\"       | Izquierda, abajo y derecha |
-|      \"C\"       | Arriba, izquierda y abajo  |
-|      \"n\"       |          Sin caja          |
+|       "o"        | Caja entera (por defecto)  |
+|       "7"        |      Arriba y derecha      |
+|       "L"        |     Izquierda y abajo      |
+|       "U"        | Izquierda, abajo y derecha |
+|       "C"        | Arriba, izquierda y abajo  |
+|       "n"        |          Sin caja          |
 
-La forma de los caracteres \"7\", \"L\" y \"U\" representan la forma de los bordes que dibujan.
+La forma de los caracteres "7", "L" y "U" representan la forma de los bordes que dibujan.
 
 ``` r
 par(mfrow = c(2, 3))
